@@ -1082,13 +1082,21 @@ function renderClients(){
   el.innerHTML=html;
 }
 
+// Exposer sur window pour accessibilité globale
+window.renderCommerciaux = renderCommerciaux;
+window.renderClients = renderClients;
+window.configurerCommerciaux = configurerCommerciaux;
+window.changerCouleurC = changerCouleurC;
+window.sauverCommerciaux = sauverCommerciaux;
+
 // Déclencher le rendu quand on clique sur un onglet
 var _origSwitchTab = switchTab;
-switchTab = function(name, el){
+window.switchTab = function(name, el){
   _origSwitchTab(name, el);
   if(name==='commerciaux') renderCommerciaux();
   if(name==='clients') renderClients();
 };
+switchTab = window.switchTab;
 </script>
 
 </body>
