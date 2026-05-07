@@ -6,98 +6,85 @@
 <title>Graphic Print — Gestion commerciale</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+:root{--noir:#1A1A2E;--marine:#16213E;--or:#C9A84C;--or-clair:#E8C96A;--or-bg:#FBF5E6;--fond:#F0EFE9;--blanc:#FFFFFF;--gris:#6B6B6B;--gris-l:#E8E6E0;--texte:#1A1A2E;--vert:#2D7A4F;--rouge:#C0392B;--orange:#D68910}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#F8F7F4;color:#2C2C2A;font-size:14px}
-.topbar{background:#185FA5;color:#fff;padding:10px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
-.topbar-title{font-size:14px;font-weight:bold;flex:1}
-.badge{display:inline-block;padding:3px 11px;border-radius:999px;font-size:11px;font-weight:bold}
-.badge-lecture{background:rgba(255,255,255,.18);color:#fff}
-.badge-contrib{background:#FAEEDA;color:#633806}
-.badge-compta{background:#EAF3DE;color:#27500A}
-.badge-admin{background:#E6F1FB;color:#0C447C}
-.btn-top{font-size:12px;padding:5px 12px;border-radius:6px;border:0.5px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;cursor:pointer}
-.btn-top:hover{background:rgba(255,255,255,.25)}
-.banner{padding:7px 20px;font-size:12px;display:flex;align-items:center;gap:8px}
-.banner-contrib{background:#FAEEDA;border-bottom:1px solid #FAC775;color:#633806}
-.banner-compta{background:#EAF3DE;border-bottom:1px solid #97C459;color:#27500A}
-.container{max-width:1100px;margin:0 auto;padding:16px}
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}
-.kpi{background:#fff;border:0.5px solid #D3D1C7;border-radius:8px;padding:12px 14px}
-.kpi-l{font-size:11px;color:#888780;margin-bottom:4px}
-.kpi-v{font-size:20px;font-weight:bold}
-.kpi-v.blu{color:#185FA5}.kpi-v.red{color:#A32D2D}.kpi-v.grn{color:#3B6D11}.kpi-v.ora{color:#854F0B}
-.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-.toolbar input,.toolbar select{font-size:13px;padding:6px 10px;border-radius:6px;border:0.5px solid #D3D1C7;background:#fff;color:#2C2C2A}
-.toolbar input{flex:1;min-width:180px}
-.btn{font-size:12px;padding:6px 14px;border-radius:6px;border:0.5px solid #D3D1C7;background:#fff;color:#2C2C2A;cursor:pointer;white-space:nowrap}
-.btn:hover{background:#F1EFE8}
-.btn-p{background:#185FA5;color:#fff;border-color:#185FA5}.btn-p:hover{background:#0C447C}
-.btn-g{background:#3B6D11;color:#fff;border-color:#3B6D11}.btn-g:hover{background:#27500A}
-.btn-r{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
-.btn-o{background:#FAEEDA;color:#633806;border-color:#FAC775}
-.btn-sm{font-size:11px;padding:3px 9px}
-.btn:disabled{opacity:.4;cursor:default}
-.stages{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:24px}
-.stage-col{min-width:0}
-.stage-head{font-size:11px;font-weight:bold;padding:6px;border-radius:6px;margin-bottom:6px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.s0{background:#E1F5EE;color:#085041}.s1{background:#E1F5EE;color:#085041}
-.s2{background:#EEEDFE;color:#3C3489}.s3{background:#FAEEDA;color:#633806}
-.s4{background:#E6F1FB;color:#0C447C}.s5{background:#EAF3DE;color:#27500A}
-.card{background:#fff;border:0.5px solid #D3D1C7;border-radius:6px;padding:8px;margin-bottom:5px;cursor:pointer;font-size:12px}
-.card:hover{border-color:#185FA5;background:#F8F7F4}
-.card-client{font-weight:bold;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-amount{color:#185FA5;font-size:11px;margin-bottom:2px}
-.pill{display:inline-block;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:bold;margin-top:3px}
-.p-red{background:#FCEBEB;color:#A32D2D}.p-ora{background:#FAEEDA;color:#854F0B}
-.p-grn{background:#EAF3DE;color:#3B6D11}.p-blu{background:#E6F1FB;color:#185FA5}
-.p-pur{background:#EEEDFE;color:#3C3489}
-.empty-col{text-align:center;padding:10px 4px;font-size:11px;color:#888780}
-.tabs{display:flex;border-bottom:2px solid #185FA5;margin-bottom:16px}
-.tab{padding:8px 18px;font-size:13px;cursor:pointer;color:#888780;border-bottom:2px solid transparent;margin-bottom:-2px}
-.tab.active{color:#185FA5;font-weight:bold;border-bottom-color:#185FA5}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--fond);color:var(--texte);font-size:13px}
+.topbar{background:linear-gradient(135deg,var(--noir) 0%,var(--marine) 100%);color:#fff;padding:0 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;height:52px;box-shadow:0 2px 12px rgba(0,0,0,0.25)}
+.topbar-title{font-size:12px;font-weight:700;flex:1;letter-spacing:1.5px;text-transform:uppercase;color:#fff}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:var(--or);color:var(--noir)}
+.btn-top{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid rgba(201,168,76,0.4);background:rgba(201,168,76,0.12);color:#fff;cursor:pointer;transition:all 0.2s}
+.btn-top:hover{background:var(--or);color:var(--noir)}
+.tabs{display:flex;align-items:stretch;background:var(--blanc);border-bottom:2px solid var(--gris-l);padding:0 24px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.tab{padding:14px 22px;font-size:11px;font-weight:700;color:var(--gris);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;letter-spacing:0.8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.tab:hover{color:var(--or);background:var(--or-bg)}.tab.active{color:var(--noir);border-bottom:3px solid var(--or);font-weight:800}
+.container{max-width:1400px;margin:0 auto;padding:20px 24px}
 .tab-content{display:none}.tab-content.active{display:block}
-.section-title{font-size:13px;font-weight:bold;margin:18px 0 8px;display:flex;align-items:center;gap:8px}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dot-red{background:#E24B4A}.dot-ora{background:#EF9F27}.dot-grn{background:#1D9E75}.dot-pur{background:#7F77DD}
-.drow{background:#fff;border:0.5px solid #D3D1C7;border-radius:6px;padding:9px 12px;margin-bottom:5px;display:flex;align-items:flex-start;gap:10px}
-.drow.urgent{border-left:3px solid #E24B4A;border-radius:0 6px 6px 0}
-.drow.proche{border-left:3px solid #EF9F27;border-radius:0 6px 6px 0}
-.drow.ok-z{border-left:3px solid #1D9E75;border-radius:0 6px 6px 0}
-.dr-main{flex:1;min-width:0}
-.dr-client{font-size:13px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dr-sub{font-size:11px;color:#888780;margin-top:1px}
-.action-row{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;align-items:center}
-.empty{text-align:center;padding:10px;font-size:12px;color:#888780;background:#F8F7F4;border-radius:6px}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:flex-start;justify-content:center;padding-top:30px;overflow-y:auto}
+.kpi-row{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-bottom:20px}
+.kpi{background:var(--blanc);border-radius:10px;padding:14px 10px;border:1px solid var(--gris-l);border-top:3px solid var(--or);box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform 0.2s;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:80px}
+.kpi:hover{transform:translateY(-2px)}
+.kpi-l{font-size:9px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;line-height:1.3}
+.kpi-v{font-size:16px;font-weight:800;color:var(--noir);line-height:1.1;word-break:break-word}
+.kpi-v.blu{color:#185FA5}.kpi-v.grn{color:var(--vert)}.kpi-v.red{color:var(--rouge)}.kpi-v.ora{color:var(--orange)}
+.toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+.toolbar input,.toolbar select{padding:8px 12px;border-radius:8px;border:1px solid var(--gris-l);background:var(--blanc);color:var(--texte);font-size:12px;outline:none;transition:border 0.2s}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--or)}
+.toolbar input{flex:1;min-width:200px}
+.btn{padding:8px 16px;border-radius:8px;border:1px solid var(--gris-l);background:var(--blanc);color:var(--texte);cursor:pointer;font-size:12px;font-weight:600;transition:all 0.2s}
+.btn:hover{border-color:var(--or);color:var(--or)}
+.btn-p{background:linear-gradient(135deg,var(--or),var(--or-clair));color:var(--noir);border-color:var(--or);box-shadow:0 2px 8px rgba(201,168,76,0.3)}
+.btn-p:hover{box-shadow:0 4px 16px rgba(201,168,76,0.5);transform:translateY(-1px)}
+.btn-r{background:#fff0f0;color:var(--rouge);border-color:#ffcccc}
+.btn-g{background:#e8f8f0;color:var(--vert);border-color:#b8e8cc}
+.btn-sm{font-size:11px;padding:5px 10px}
+.stages{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:start}
+.stage-col{background:var(--blanc);border-radius:10px;border:1px solid var(--gris-l);overflow:hidden;min-height:120px;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.stage-head{padding:10px 12px;font-size:10px;font-weight:700;text-align:center;letter-spacing:0.8px;text-transform:uppercase;border-bottom:1px solid var(--gris-l)}
+.s0{background:#EEF2F8;color:#185FA5}.s1{background:#F0EAF8;color:#6B2FA0}.s2{background:#FEF3E2;color:#D68910}.s3{background:#FFF3CD;color:#C07A00}.s4{background:#E8F4FD;color:#1A6AA0}.s5{background:#E8F8F0;color:var(--vert)}
+.card{margin:8px;padding:10px 12px;background:var(--blanc);border-radius:8px;border:1px solid var(--gris-l);cursor:pointer;transition:all 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.12);transform:translateY(-1px)}
+.card-client{font-weight:700;font-size:12px;color:var(--texte);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-amount{font-size:11px;font-weight:700;color:#185FA5;margin-bottom:4px}
+.card-info{font-size:10px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;margin-top:4px}
+.p-ret{background:#FDEDEC;color:var(--rouge)}.p-att{background:#FEF9E7;color:#C07A00}.p-blu{background:#EEF2F8;color:#185FA5}
+.p-red{background:#FDEDEC;color:var(--rouge)}.p-ora{background:#FEF3E2;color:#D68910}.p-grn{background:#E8F8F0;color:var(--vert)}
+.overlay{position:fixed;inset:0;background:rgba(26,26,46,0.6);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 .overlay.open{display:flex}
-.modal{background:#fff;border-radius:10px;border:0.5px solid #D3D1C7;padding:1.5rem;width:560px;max-width:96vw;max-height:88vh;overflow-y:auto}
-.modal h3{font-size:15px;font-weight:bold;margin-bottom:.25rem;color:#185FA5}
-.modal-sub{font-size:12px;color:#888780;margin-bottom:1rem}
-.fr{margin-bottom:10px}
-.fr label{display:block;font-size:11px;color:#888780;margin-bottom:3px}
-.fr input,.fr select,.fr textarea{width:100%;font-size:13px;padding:6px 9px;border-radius:6px;border:0.5px solid #D3D1C7;background:#fff;color:#2C2C2A}
-.fr textarea{height:56px;resize:vertical}
-.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fa{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem}
-.sep{border:none;border-top:0.5px solid #D3D1C7;margin:.75rem 0}
-.tag-lecture{font-size:11px;color:#888780;font-style:italic}
-.spinner{text-align:center;padding:2rem;color:#888780}
-.sync-badge{font-size:10px;padding:2px 8px;border-radius:999px;background:#EAF3DE;color:#3B6D11;margin-left:8px}
-.prog-wrap{background:#F1EFE8;border-radius:999px;height:8px;margin:5px 0;overflow:hidden}
-.prog-fill{height:100%;border-radius:999px;background:#3B6D11;transition:width .3s}
-.v-item{background:#F8F7F4;border:0.5px solid #D3D1C7;border-radius:6px;padding:9px 12px;margin-bottom:6px}
-.v-item.v-ok{background:#EAF3DE;border-color:#97C459}
-.v-item.v-late{background:#FCEBEB;border-color:#F09595}
-.recap-box{background:#E6F1FB;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px}
-.recap-box b{color:#185FA5}
-@media print{.topbar,.toolbar,.tabs,.kpi-row,.stages,.section-title,.action-row,.overlay,.btn,.tab,#tab-recouvrement,.banner{display:none!important}#printZone{display:block!important}}
-#printZone{display:none}
+.modal{background:var(--blanc);border-radius:14px;padding:28px;width:min(680px,95vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.modal h3{font-size:16px;font-weight:800;color:var(--noir);margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--gris);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--gris-l)}
+.fr{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.fr label{font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:0.5px}
+.fr input,.fr select,.fr textarea{padding:9px 12px;border-radius:8px;border:1px solid var(--gris-l);font-size:13px;outline:none;transition:border 0.2s;font-family:inherit}
+.fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(201,168,76,0.15)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fa{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--gris-l)}
+.rec-zone{margin-bottom:20px}
+.rec-zone-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:10px 16px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:8px}
+.rec-urgent .rec-zone-title{background:#FDEDEC;color:var(--rouge)}.rec-proche .rec-zone-title{background:#FEF3E2;color:#D68910}
+.rec-cours .rec-zone-title{background:#EEF2F8;color:#185FA5}.rec-archive .rec-zone-title{background:#F0F0F0;color:var(--gris)}
+.drow{background:var(--blanc);border:1px solid var(--gris-l);border-radius:8px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:flex-start;transition:box-shadow 0.2s}
+.drow:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.dr-main{flex:1;padding-right:16px;border-right:1px solid var(--gris-l)}
+.dr-client{font-weight:700;font-size:13px;color:var(--texte)}
+.dr-sub{font-size:11px;color:var(--gris);margin-top:2px}
+.dr-right{width:200px;flex-shrink:0;padding-left:16px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end}
+.action-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.prog-wrap{background:var(--gris-l);border-radius:999px;height:6px;overflow:hidden;margin:4px 0}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--or),var(--or-clair));border-radius:999px;transition:width 0.4s}
+.detail-table{width:100%;border-collapse:collapse;font-size:12px}
+.detail-table td{padding:8px 12px;border-bottom:1px solid var(--gris-l)}
+.detail-table td:first-child{font-weight:600;color:var(--gris);width:160px;text-transform:uppercase;font-size:10px;letter-spacing:0.5px}
+.tag-lecture{font-size:11px;color:var(--gris);font-style:italic}
+.empty{padding:20px;text-align:center;color:var(--gris);font-style:italic;font-size:12px}
+@media print{.topbar,.tabs,.toolbar,.btn,.action-row{display:none}.modal{box-shadow:none}}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="topbar-title">GRAPHIC PRINT — Gestion commerciale <span class="sync-badge" id="syncBadge">Synchronisé</span></div>
   <span id="modeBadge" class="badge badge-lecture">Mode lecture</span>
+  <a href="https://graphic-print-gestion.pages.dev/production.html" class="btn-top" style="text-decoration:none" target="_blank">🏭 Production</a>
   <button class="btn-top" id="btnConnexion" onclick="ouvrirLogin()">Connexion</button>
   <button class="btn-top" id="btnLogout" onclick="seDeconnecter()" style="display:none">Déconnexion</button>
 </div>
@@ -106,16 +93,19 @@ body{font-family:Arial,sans-serif;background:#F8F7F4;color:#2C2C2A;font-size:14p
 
 <div class="container">
 <div class="tabs">
+  <div class="tab" onclick="switchTab('stats',this)">&#128202; Statistiques</div>
   <div class="tab active" onclick="switchTab('pipeline',this)">Pipeline commercial</div>
   <div class="tab" onclick="switchTab('recouvrement',this)">Recouvrement</div>
-  <div class="tab" id="tabCommercial" onclick="switchTab('commerciaux',this)">&#128100; Commerciaux</div>
-  <div class="tab" id="tabClient" onclick="switchTab('clients',this)">&#127970; Clients</div>
+  <div class="tab" onclick="switchTab('commerciaux',this)">&#128100; Commerciaux</div>
+  <div class="tab" onclick="switchTab('clients',this)">&#127970; Clients</div>
+  <div class="tab" onclick="switchTab('contacts',this)">&#128222; Contacts</div>
+  <div class="tab" onclick="switchTab('historique',this)">&#128193; Historique</div>
 </div>
 
 <div class="tab-content active" id="tab-pipeline">
   <div class="kpi-row" id="kpiRow"><div class="spinner">Chargement...</div></div>
   <div class="toolbar">
-    <input type="text" id="searchInput" placeholder="Client, n° dossier..." oninput="renderBoard()">
+    <input type="text" id="searchInput" placeholder="Client, n° dossier..." autocomplete="off" oninput="renderBoard()">
     <select id="filterSect" onchange="renderBoard()">
       <option value="">Tous secteurs</option>
       <option>Banque / Finance</option><option>Administration publique</option>
@@ -127,8 +117,11 @@ body{font-family:Arial,sans-serif;background:#F8F7F4;color:#2C2C2A;font-size:14p
   <div class="stages" id="board"><div class="spinner" style="grid-column:1/-1">Chargement...</div></div>
 </div>
 
+<div class="tab-content" id="tab-stats"></div>
 <div class="tab-content" id="tab-commerciaux"></div>
 <div class="tab-content" id="tab-clients"></div>
+<div class="tab-content" id="tab-contacts"></div>
+<div class="tab-content" id="tab-historique"></div>
 <div class="tab-content" id="tab-recouvrement">
   <div class="kpi-row" id="kpiRecRow"></div>
   <div class="section-title"><span class="dot dot-red"></span>Action requise — échéance dépassée</div>
@@ -181,9 +174,9 @@ const SB = supabase.createClient(
   'sb_publishable_aa-fC7neU8yHo2nFLO3LFA_saTkf_IS'
 );
 const PASS = {
-  'GraphicPrint2026':'admin',
-  'GpContrib2026':'contributeur',
-  'GpCompta2026':'comptable'
+  'MarleneGP26':'admin',
+  'DirectionGP26':'contributeur',
+  'ComptaGP26':'comptable'
 };
 const STAGES = [
   {id:0,label:'Accueil & tarification',short:'Tarification',cls:'s0'},
@@ -217,7 +210,7 @@ var DR = {
 // ══════════════════════════════════════════════════════════
 //  UTILITAIRES
 // ══════════════════════════════════════════════════════════
-function fmt(n){ return new Intl.NumberFormat('fr-FR').format(Math.round(n||0))+' FCFA'; }
+function fmt(n){ return new Intl.NumberFormat('fr-FR').format(Math.round(n||0))+'<sup style="font-size:60%;font-weight:600;vertical-align:super;margin-left:2px">FCFA</sup>'; }
 
 function daysTo(dateStr){
   if(!dateStr) return 9999;
@@ -258,6 +251,28 @@ function estSolde(d){
   return enc >= montant;
 }
 
+function estArchive(d){
+  if(!estSolde(d)) return false;
+  var paiements=getVersements(d).filter(function(v){return v.recu&&v.date_recu;});
+  if(!paiements.length) return false;
+  var dp=paiements.sort(function(a,b){return new Date(b.date_recu)-new Date(a.date_recu);})[0].date_recu;
+  var datePaie=new Date(dp);
+  var now=new Date();
+  return (datePaie.getFullYear()<now.getFullYear())||(datePaie.getFullYear()===now.getFullYear()&&datePaie.getMonth()<now.getMonth());
+}
+function estDansHistorique(d){
+  if(!estArchive(d)) return false;
+  var paiements=getVersements(d).filter(function(v){return v.recu&&v.date_recu;});
+  if(!paiements.length) return false;
+  var dp=paiements.sort(function(a,b){return new Date(b.date_recu)-new Date(a.date_recu);})[0].date_recu;
+  var il12=new Date();il12.setMonth(il12.getMonth()-12);
+  return new Date(dp)>=il12;
+}
+function dateDernierPaiement(d){
+  var paiements=getVersements(d).filter(function(v){return v.recu&&v.date_recu;});
+  if(!paiements.length) return null;
+  return paiements.sort(function(a,b){return new Date(b.date_recu)-new Date(a.date_recu);})[0].date_recu;
+}
 // Prochaine échéance : prochain versement non reçu, sinon échéance globale
 function prochaineEch(d){
   var vs = getVersements(d);
@@ -326,6 +341,9 @@ function switchTab(name,el){
   document.getElementById('tab-'+name).classList.add('active');
   if(name==='commerciaux') renderCommerciaux();
   if(name==='clients') renderClients();
+  if(name==='contacts') renderContacts();
+  if(name==='historique') renderHistorique();
+  if(name==='stats') renderStats();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -340,6 +358,7 @@ async function charger(){
   }catch(e){ console.error('Erreur chargement:',e); sync(false); }
   renderBoard();
   renderRecouvrement();
+  chargerContacts();
 }
 setInterval(charger,30000);
 
@@ -359,9 +378,19 @@ async function sauver(id, updates){
 //  PIPELINE
 // ══════════════════════════════════════════════════════════
 function renderBoard(){
+  var styleId='comm-colors';
+  if(!document.getElementById(styleId)){
+    var style=document.createElement('style');
+    style.id=styleId;
+    style.textContent=COMMERCIAUX.map(function(c){
+      return '.comm-'+c.id+'{border-left:4px solid '+c.couleur+' !important;border-radius:0 6px 6px 0}';
+    }).join('');
+    document.head.appendChild(style);
+  }
   var q=(document.getElementById('searchInput')||{value:''}).value.toLowerCase();
   var sect=(document.getElementById('filterSect')||{value:''}).value;
   var filtered=G_DOSSIERS.filter(function(d){
+    if(estArchive(d)) return false;
     return ((d.client||'').toLowerCase().includes(q)||(d.num||'').toLowerCase().includes(q)||(d.objet||'').toLowerCase().includes(q))
       &&(!sect||d.secteur===sect);
   });
@@ -396,7 +425,7 @@ function renderBoard(){
         var enc=totalEnc(d);
         var pct=d.montant>0?Math.min(100,Math.round(enc/d.montant*100)):0;
         var retard=d.etape>=4&&getZone(d)==='urgent';
-        return '<div class="card" onclick="ouvrirDetail(\''+d.id+'\')">'+
+        return '<div class="card comm-'+d.commercial+'" onclick="ouvrirDetail(\''+d.id+'\')">'+
           '<div class="card-client">'+( d.client||'')+'</div>'+
           '<div class="card-amount">'+fmt(d.montant)+'</div>'+
           '<div style="font-size:10px;color:#888780">'+(d.objet||'').slice(0,26)+((d.objet||'').length>26?'…':'')+'</div>'+
@@ -405,9 +434,12 @@ function renderBoard(){
           (d.etape===3&&!estSolde(d)?'<span class="pill p-ora">Att. client</span>':'')+
           (avecV?'<span class="pill p-pur">Acomptes</span>':'')+
           (estSolde(d)?'<span class="pill p-grn">Soldé ✓</span>':'')+
+          badgeProd(d.statut_production)+
+          badgeBat(d.bat_statut)+
           '</div>';
       }).join('')+'</div>';
   }).join('');
+  coloriserCartes();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -487,7 +519,10 @@ function ouvrirDetail(id){
     (avecV?'<span class="pill p-pur">Acomptes</span>':'')+
     '</div>'+
     '<table style="width:100%;font-size:12px;border-collapse:collapse">'+
-    [['Prestation',d.objet||'—'],['Montant total',fmt(d.montant)],
+    [['Commercial',nomC(d.commercial)],
+     ['BAT Client',badgeBat(d.bat_statut)+(d.bat_date_validation?' — '+d.bat_date_validation:'')+(d.bat_ref?' — '+d.bat_ref:'')],
+     ['Statut production',badgeProd(d.statut_production||'non_lance')],
+     ['Prestation',d.objet||'—'],['Montant total',fmt(d.montant)],
      ['Date facture',d.date_facture||'—'],['Échéance',d.echeance||'—'],
      ['Preuve client',d.preuve_client||'—'],
      ['Relances',rl.length+(rl.length?' ('+rl.join(', ')+')':(': aucune'))],
@@ -707,6 +742,18 @@ function afficherFormDossier(d){
     '<h3>'+(G_EDITING?'Modifier le dossier':'Nouveau dossier')+'</h3>'+
     '<div class="fr2">'+
     '<div class="fr"><label>N° Dossier</label><input id="fNum" value="'+defNum+'"></div>'+
+    '<div class="fr"><label>Commercial</label><select id="fComm">'+
+    COMMERCIAUX.map(function(c){return '<option value="'+c.id+'"'+(d.commercial===c.id?' selected':'')+'>'+c.nom+'</option>';}).join('')+
+    '</select></div>'+
+    '<div class="fr2">'+
+    '<div class="fr"><label>Interlocuteur</label><input id="fInterlocuteur" value="'+(d.interlocuteur||'')+'"></div>'+
+    '<div class="fr"><label>T&#233;l&#233;phone</label><input id="fTelephone" placeholder="+242..." value="'+(d.telephone||'')+'"></div>'+
+    '</div>'+
+    '<div class="fr2">'+
+    '<div class="fr"><label>Email</label><input id="fEmail" type="email" value="'+(d.email||'')+'"></div>'+
+    '<div class="fr"><label>Adresse</label><input id="fAdresse" value="'+(d.adresse||'')+'"></div>'+
+    '</div>'+
+
     '<div class="fr"><label>Secteur</label><select id="fSect">'+
     ['Banque / Finance','Administration publique','Télécoms','ONG / Org. internationale','Hôtellerie / Tourisme','Industrie / BTP','Autre'].map(function(s){return '<option'+(d.secteur===s?' selected':'')+'>'+s+'</option>';}).join('')+
     '</select></div></div>'+
@@ -730,21 +777,42 @@ async function sauvegarderFormDossier(){
   var client=document.getElementById('fClient').value.trim();
   var montant=parseFloat(document.getElementById('fMontant').value);
   if(!num||!client||!montant){alert('N° dossier, client et montant sont obligatoires.');return;}
+  // Récupérer le dossier en cours d'édition pour conserver les champs production
+  var dExist = G_EDITING ? (G_DOSSIERS.find(function(x){return x.id===G_EDITING;})||{}) : {};
   var data={
     num:num, client:client,
-    secteur:document.getElementById('fSect').value,
-    objet:document.getElementById('fObjet').value,
+    commercial:document.getElementById('fComm')?document.getElementById('fComm').value:'C1',
+    statut_production: dExist.statut_production||'non_lance',
+    bat_statut: dExist.bat_statut||'non_soumis',
+    bat_date_validation: dExist.bat_date_validation||null,
+    bat_ref: dExist.bat_ref||null,
+    machines_assignees: dExist.machines_assignees||null,
+    machinistes_assignes: dExist.machinistes_assignes||null,
+    date_livraison_souhaitee: dExist.date_livraison_souhaitee||null,
+    date_livraison_prevue: dExist.date_livraison_prevue||null,
+    atelier_production: dExist.atelier_production||null,
+    interlocuteur:document.getElementById('fInterlocuteur')?document.getElementById('fInterlocuteur').value:'',
+    telephone:document.getElementById('fTelephone')?document.getElementById('fTelephone').value:'',
+    email:document.getElementById('fEmail')?document.getElementById('fEmail').value:'',
+    adresse:document.getElementById('fAdresse')?document.getElementById('fAdresse').value:'',
+    secteur:document.getElementById('fSect')?document.getElementById('fSect').value:'',
+    objet:document.getElementById('fObjet')?document.getElementById('fObjet').value:'',
     montant:montant,
-    date_facture:document.getElementById('fDateFact').value||null,
-    echeance:document.getElementById('fEch').value||null,
-    notes:document.getElementById('fNotes').value
+    date_facture:document.getElementById('fDateFact')?document.getElementById('fDateFact').value||null:null,
+    echeance:document.getElementById('fEch')?document.getElementById('fEch').value||null:null,
+    notes:document.getElementById('fNotes')?document.getElementById('fNotes').value:''
   };
-  fermerOverlay('overlayDossier');
-  if(G_EDITING){
-    await sauver(G_EDITING,data);
-  }else{
-    await SB.from('dossiers').insert([Object.assign({},data,{etape:0,relances:[],paye:false,versements:[]})]);
-    await charger();
+  try{
+    if(G_EDITING){
+      await sauver(G_EDITING,data);
+    }else{
+      var res=await SB.from('dossiers').insert([Object.assign({},data,{etape:0,relances:[],paye:false,versements:[]})]);
+      if(res.error) throw res.error;
+      await charger();
+    }
+    fermerOverlay('overlayDossier');
+  }catch(e){
+    alert('Erreur enregistrement: '+e.message);
   }
 }
 
@@ -753,8 +821,8 @@ async function sauvegarderFormDossier(){
 // ══════════════════════════════════════════════════════════
 function renderRecouvrement(){
   // Tous les dossiers facturés non soldés
-  var aRec=G_DOSSIERS.filter(function(d){return d.etape>=4&&!estSolde(d);});
-  var soldes=G_DOSSIERS.filter(function(d){return estSolde(d);});
+  var aRec=G_DOSSIERS.filter(function(d){return d.etape>=4&&!estSolde(d)&&!estArchive(d);});
+  var soldes=G_DOSSIERS.filter(function(d){return estSolde(d)&&!estArchive(d);});
 
   var totE=aRec.reduce(function(s,d){return s+(parseFloat(d.montant)||0);},0);
   var totEnc=aRec.reduce(function(s,d){return s+totalEnc(d);},0);
@@ -810,10 +878,10 @@ function renderRecouvrement(){
       (prochainV?'<div style="font-size:11px;color:#888780;margin-top:3px">Prochain versement : <strong>'+prochainV.label+'</strong> — '+fmt(prochainV.montant)+(prochainV.echeance?' — éch. '+prochainV.echeance:'')+'</div>':'')+
       '<div class="action-row">'+actions+'</div>'+
       '</div>'+
-      '<div style="flex-shrink:0;text-align:right">'+
-      '<div style="font-size:13px;font-weight:bold;color:#185FA5">'+fmt(d.montant)+'</div>'+
-      '<div style="margin-top:4px">'+lbl+'</div>'+
-      (ech?'<div style="font-size:10px;color:#888780;margin-top:2px">Prochaine éch. '+ech+'</div>':'')+
+      '<div class="dr-right">'+
+      '<div style="font-size:14px;font-weight:800;color:#185FA5;text-align:right">'+fmt(d.montant)+'</div>'+
+      '<div style="margin-top:6px;text-align:right">'+lbl+'</div>'+
+      (ech?'<div style="font-size:10px;color:var(--gris);margin-top:4px;text-align:right">Éch. '+ech+'</div>':'')+
       '</div></div>';
   }
 
@@ -922,7 +990,6 @@ document.querySelectorAll('.overlay').forEach(function(o){
 //  DÉMARRAGE
 // ══════════════════════════════════════════════════════════
 
-// ── COMMERCIAUX ─────────────────────────────────────────────────
 var COMMERCIAUX=[
   {id:'C1',nom:'Commercial 1',couleur:'#185FA5',bg:'#E6F1FB'},
   {id:'C2',nom:'Commercial 2',couleur:'#3B6D11',bg:'#EAF3DE'},
@@ -930,8 +997,46 @@ var COMMERCIAUX=[
   {id:'C4',nom:'Commercial 4',couleur:'#6B2FA0',bg:'#F0E6FA'},
   {id:'C5',nom:'Commercial 5',couleur:'#A32D2D',bg:'#FCEBEB'},
 ];
+// Charger les noms sauvegardés depuis localStorage
+(function(){
+  try {
+    var saved = localStorage.getItem('gp_commerciaux');
+    if(saved){
+      var data = JSON.parse(saved);
+      data.forEach(function(s){
+        var c = COMMERCIAUX.find(function(x){return x.id===s.id;});
+        if(c){
+          if(s.nom) c.nom=s.nom;
+          if(s.couleur) c.couleur=s.couleur;
+          if(s.bg) c.bg=s.bg;
+        }
+      });
+    }
+  } catch(e){}
+})();
 function getC(id){return COMMERCIAUX.find(function(c){return c.id===id;})||COMMERCIAUX[0];}
 function nomC(id){return getC(id).nom;}
+
+function badgeBat(statut){
+  var map={
+    'non_soumis': '<span style="background:#F0F0F0;color:var(--gris);padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700">⏳ Non soumis</span>',
+    'soumis':     '<span style="background:#FEF9E7;color:#C07A00;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700">📤 En attente validation</span>',
+    'valide':     '<span style="background:#E8F8F0;color:#2D7A4F;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700">✅ Validé</span>',
+    'refuse':     '<span style="background:#FDEDEC;color:#C0392B;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700">❌ Refusé</span>'
+  };
+  return map[statut||'non_soumis']||map['non_soumis'];
+}
+
+function badgeProd(statut){
+  if(!statut || statut==='non_lance') return '';
+  var map = {
+    'en_attente':  '<span style="background:#FEF9E7;color:#C07A00;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700">⏳ En attente</span>',
+    'en_production':'<span style="background:#FEF3E2;color:#D68910;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700">🔧 En production</span>',
+    'prod_termine': '<span style="background:#E8F8F0;color:#2D7A4F;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700">✅ Prêt à livrer</span>',
+    'livre':        '<span style="background:#EEF2F8;color:#185FA5;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700">🚚 Livré</span>'
+  };
+  return map[statut] || '';
+}
 
 function renderCommerciaux(){
   var el=document.getElementById('tab-commerciaux');
@@ -939,57 +1044,124 @@ function renderCommerciaux(){
   var isAdmin=(G_ROLE==='admin');
   var dossiers=G_DOSSIERS||[];
   var totalCA=dossiers.filter(function(d){return d.etape>=4;}).reduce(function(s,d){return s+(parseFloat(d.montant)||0);},0);
-  var html='<div style="max-width:900px;margin:0 auto;padding:12px">';
-  if(isAdmin){html+='<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-p btn-sm" onclick="configurerCommerciaux()">&#9881; Configurer les noms</button></div>';}
-  html+=COMMERCIAUX.map(function(c){
+  var div=document.createElement('div');
+  div.style.cssText='max-width:900px;margin:0 auto;padding:12px';
+  if(isAdmin){
+    var btnDiv=document.createElement('div');
+    btnDiv.style.cssText='display:flex;justify-content:flex-end;margin-bottom:12px';
+    var btn=document.createElement('button');
+    btn.className='btn btn-p btn-sm';
+    btn.textContent='\u2699 Configurer les noms';
+    btn.onclick=configurerCommerciaux;
+    btnDiv.appendChild(btn);
+    div.appendChild(btnDiv);
+  }
+  COMMERCIAUX.forEach(function(c){
     var dossC=dossiers.filter(function(d){return d.commercial===c.id;});
     var actifs=dossC.filter(function(d){return !estSolde(d);});
     var factCA=dossC.filter(function(d){return d.etape>=4;}).reduce(function(s,d){return s+(parseFloat(d.montant)||0);},0);
     var encC=dossC.reduce(function(s,d){return s+totalEnc(d);},0);
     var pct=totalCA>0?Math.round(factCA/totalCA*100):0;
-    return '<div style="background:#fff;border:0.5px solid #D3D1C7;border-left:4px solid '+c.couleur+';border-radius:0 8px 8px 0;padding:14px;margin-bottom:10px">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
-      +'<div style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+c.couleur+'"></span>'
+    var card=document.createElement('div');
+    card.style.cssText='background:#fff;border:0.5px solid #D3D1C7;border-left:4px solid '+c.couleur+';border-radius:0 8px 8px 0;padding:14px;margin-bottom:10px';
+    card.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
+      +'<div style="display:flex;align-items:center;gap:8px">'
+      +'<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+c.couleur+'"></span>'
       +'<strong style="font-size:15px;color:'+c.couleur+'">'+c.nom+'</strong></div>'
       +'<span style="font-size:12px;color:#888780">'+dossC.length+' dossier(s)</span></div>'
       +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:12px">'
       +'<div style="background:'+c.bg+';padding:8px;border-radius:6px;text-align:center"><div style="color:#888780;margin-bottom:3px">Dossiers actifs</div><div style="font-weight:bold;font-size:18px;color:'+c.couleur+'">'+actifs.length+'</div></div>'
-      +'<div style="background:'+c.bg+';padding:8px;border-radius:6px;text-align:center"><div style="color:#888780;margin-bottom:3px">CA factur&#233;</div><div style="font-weight:bold;color:'+c.couleur+'">'+fmt(factCA)+'</div></div>'
-      +'<div style="background:'+c.bg+';padding:8px;border-radius:6px;text-align:center"><div style="color:#888780;margin-bottom:3px">Encaiss&#233;</div><div style="font-weight:bold;color:'+c.couleur+'">'+fmt(encC)+'</div></div>'
+      +'<div style="background:'+c.bg+';padding:8px;border-radius:6px;text-align:center"><div style="color:#888780;margin-bottom:3px">CA factur\u00e9</div><div style="font-weight:bold;color:'+c.couleur+'">'+fmt(factCA)+'</div></div>'
+      +'<div style="background:'+c.bg+';padding:8px;border-radius:6px;text-align:center"><div style="color:#888780;margin-bottom:3px">Encaiss\u00e9</div><div style="font-weight:bold;color:'+c.couleur+'">'+fmt(encC)+'</div></div>'
       +'<div style="background:'+c.bg+';padding:8px;border-radius:6px;text-align:center"><div style="color:#888780;margin-bottom:3px">Part du CA</div><div style="font-weight:bold;color:'+c.couleur+'">'+pct+'%</div></div>'
-      +'</div></div>';
-  }).join('');
-  html+='</div>';
-  el.innerHTML=html;
+      +'</div>';
+    div.appendChild(card);
+  });
+  el.innerHTML='';
+  el.appendChild(div);
 }
 
 function configurerCommerciaux(){
   var modal=document.getElementById('modalDossier');
-  modal.innerHTML='<h3>&#9881; Configurer les commerciaux</h3>'
-    +'<div class="modal-sub">Admin uniquement</div>'
-    +COMMERCIAUX.map(function(c,i){
-      return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
-        +'<span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:'+c.couleur+';flex-shrink:0"></span>'
-        +'<input type="text" id="nomC'+i+'" value="'+c.nom+'" style="flex:1;font-size:13px;padding:6px;border-radius:6px;border:0.5px solid #D3D1C7">'
-        +'<div style="display:flex;gap:5px">'
-        +['#185FA5','#3B6D11','#854F0B','#6B2FA0','#A32D2D'].map(function(col){
-          return '<span onclick="changerCouleurC('+i+',''+col+'')" style="display:inline-block;width:22px;height:22px;border-radius:50%;background:'+col+';cursor:pointer;border:'+(c.couleur===col?'3px solid #2C2C2A':'1px solid #ccc')+'"></span>';
-        }).join('')+'</div></div>';
-    }).join('')
-    +'<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem">'
-    +'<button class="btn" onclick="fermerOverlay('overlayDossier')">Annuler</button>'
-    +'<button class="btn btn-p" onclick="sauverCommerciaux()">Enregistrer</button></div>';
+  var cols=['#185FA5','#3B6D11','#854F0B','#6B2FA0','#A32D2D'];
+  var div=document.createElement('div');
+  div.innerHTML='<h3>\u2699 Configurer les commerciaux</h3><div class="modal-sub">Admin uniquement</div>';
+  COMMERCIAUX.forEach(function(c,i){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:10px;margin-bottom:10px';
+    var dot=document.createElement('span');
+    dot.style.cssText='display:inline-block;width:16px;height:16px;border-radius:50%;background:'+c.couleur+';flex-shrink:0';
+    var inp=document.createElement('input');
+    inp.type='text';
+    inp.id='nomC'+i;
+    inp.value=c.nom;
+    inp.style.cssText='flex:1;font-size:13px;padding:6px;border-radius:6px;border:0.5px solid #D3D1C7';
+    var colDiv=document.createElement('div');
+    colDiv.style.cssText='display:flex;gap:5px';
+    cols.forEach(function(col){
+      var sp=document.createElement('span');
+      sp.style.cssText='display:inline-block;width:22px;height:22px;border-radius:50%;background:'+col+';cursor:pointer;border:'+(c.couleur===col?'3px solid #2C2C2A':'1px solid #ccc');
+      sp.dataset.idx=i;
+      sp.dataset.col=col;
+      sp.onclick=function(){changerCouleurC(parseInt(this.dataset.idx),this.dataset.col);};
+      colDiv.appendChild(sp);
+    });
+    row.appendChild(dot);
+    row.appendChild(inp);
+    row.appendChild(colDiv);
+    div.appendChild(row);
+  });
+  var btns=document.createElement('div');
+  btns.style.cssText='display:flex;gap:8px;justify-content:flex-end;margin-top:1rem';
+  var btnAnn=document.createElement('button');
+  btnAnn.className='btn';
+  btnAnn.textContent='Annuler';
+  btnAnn.onclick=function(){fermerOverlay('overlayDossier');};
+  var btnSave=document.createElement('button');
+  btnSave.className='btn btn-p';
+  btnSave.textContent='Enregistrer';
+  btnSave.onclick=sauverCommerciaux;
+  btns.appendChild(btnAnn);
+  btns.appendChild(btnSave);
+  div.appendChild(btns);
+  modal.innerHTML='';
+  modal.appendChild(div);
   document.getElementById('overlayDossier').classList.add('open');
 }
+
 function changerCouleurC(idx,couleur){
   var bgs={'#185FA5':'#E6F1FB','#3B6D11':'#EAF3DE','#854F0B':'#FAEEDA','#6B2FA0':'#F0E6FA','#A32D2D':'#FCEBEB'};
-  COMMERCIAUX[idx].couleur=couleur; COMMERCIAUX[idx].bg=bgs[couleur]||'#F5F5F5';
+  COMMERCIAUX[idx].couleur=couleur;
+  COMMERCIAUX[idx].bg=bgs[couleur]||'#F5F5F5';
   configurerCommerciaux();
 }
+
 function sauverCommerciaux(){
-  COMMERCIAUX.forEach(function(c,i){var inp=document.getElementById('nomC'+i);if(inp&&inp.value.trim())c.nom=inp.value.trim();});
-  fermerOverlay('overlayDossier'); renderCommerciaux();
-  alert('Commerciaux mis à jour !');
+  COMMERCIAUX.forEach(function(c,i){
+    var inp=document.getElementById('nomC'+i);
+    if(inp&&inp.value.trim()) c.nom=inp.value.trim();
+  });
+  fermerOverlay('overlayDossier');
+  // Re-rendre immédiatement le dashboard commercial avec les nouveaux noms
+  renderCommerciaux();
+  // Mettre à jour aussi les CSS couleurs
+  var style=document.getElementById('comm-colors');
+  if(style){
+    style.textContent=COMMERCIAUX.map(function(c){
+      return '.comm-'+c.id+'{border-left:4px solid '+c.couleur+' !important;border-radius:0 6px 6px 0}';
+    }).join('');
+  }
+  // Mettre à jour le select filtre si présent
+  var sel=document.getElementById('filterComm');
+  if(sel) sel.innerHTML='<option value="">Tous commerciaux</option>'+
+    COMMERCIAUX.map(function(c){return '<option value="'+c.id+'">'+c.nom+'</option>';}).join('');
+  // Persister dans localStorage
+  try {
+    localStorage.setItem('gp_commerciaux', JSON.stringify(
+      COMMERCIAUX.map(function(c){return {id:c.id,nom:c.nom,couleur:c.couleur,bg:c.bg};})
+    ));
+  } catch(e){}
+  alert('Commerciaux mis \u00e0 jour !');
 }
 
 function renderClients(){
@@ -999,7 +1171,7 @@ function renderClients(){
   var clientsMap={};
   dossiers.forEach(function(d){
     var nom=d.client||'Inconnu';
-    if(!clientsMap[nom])clientsMap[nom]={nom:nom,secteur:d.secteur||'—',dossiers:0,factures:0,montantTotal:0,encaisse:0};
+    if(!clientsMap[nom]) clientsMap[nom]={nom:nom,secteur:d.secteur||'\u2014',dossiers:0,factures:0,montantTotal:0,encaisse:0};
     clientsMap[nom].dossiers++;
     if(d.etape>=4){clientsMap[nom].factures++;clientsMap[nom].montantTotal+=parseFloat(d.montant)||0;}
     clientsMap[nom].encaisse+=totalEnc(d);
@@ -1007,38 +1179,432 @@ function renderClients(){
   var clients=Object.values(clientsMap).sort(function(a,b){return b.montantTotal-a.montantTotal;});
   var secteursMap={};
   dossiers.filter(function(d){return d.etape>=4;}).forEach(function(d){
-    var s=d.secteur||'Non défini';
-    if(!secteursMap[s])secteursMap[s]={nom:s,nb:0,montant:0};
+    var s=d.secteur||'Non d\u00e9fini';
+    if(!secteursMap[s]) secteursMap[s]={nom:s,nb:0,montant:0};
     secteursMap[s].nb++;secteursMap[s].montant+=parseFloat(d.montant)||0;
   });
   var secteurs=Object.values(secteursMap).sort(function(a,b){return b.montant-a.montant;});
   var totalSect=secteurs.reduce(function(s,x){return s+x.montant;},0);
-  var html='<div style="max-width:900px;margin:0 auto;padding:12px">';
-  html+='<div style="font-size:14px;font-weight:bold;color:#185FA5;margin-bottom:10px">&#127942; Classement clients par CA</div>';
-  html+='<div style="background:#fff;border:0.5px solid #D3D1C7;border-radius:8px;overflow:hidden;margin-bottom:20px"><table style="width:100%;border-collapse:collapse;font-size:12px">';
-  html+='<tr style="background:#185FA5;color:#fff"><td style="padding:8px 10px">#</td><td style="padding:8px 10px">Client</td><td style="padding:8px 10px">Secteur</td><td style="padding:8px 10px;text-align:center">Factures</td><td style="padding:8px 10px;text-align:right">CA facturé</td><td style="padding:8px 10px;text-align:right">Encaissé</td></tr>';
-  html+=clients.map(function(c,i){
-    var bg=i%2===0?'#fff':'#F8F7F4';
-    var medal=i===0?'&#127947;':i===1?'&#129352;':i===2?'&#129353;':'';
-    return '<tr style="background:'+bg+'"><td style="padding:7px 10px;color:#888780">'+(i+1)+medal+'</td>'
-      +'<td style="padding:7px 10px;font-weight:bold">'+c.nom+'</td><td style="padding:7px 10px;color:#888780">'+c.secteur+'</td>'
+  var div=document.createElement('div');
+  div.style.cssText='max-width:900px;margin:0 auto;padding:12px';
+  var h1=document.createElement('div');
+  h1.style.cssText='font-size:14px;font-weight:bold;color:#185FA5;margin-bottom:10px';
+  h1.textContent='\ud83c\udfc6 Classement clients par CA';
+  div.appendChild(h1);
+  var tblWrap=document.createElement('div');
+  tblWrap.style.cssText='background:#fff;border:0.5px solid #D3D1C7;border-radius:8px;overflow:hidden;margin-bottom:20px';
+  var tbl=document.createElement('table');
+  tbl.style.cssText='width:100%;border-collapse:collapse;font-size:12px';
+  tbl.innerHTML='<tr style="background:#185FA5;color:#fff">'
+    +'<td style="padding:8px 10px">#</td>'
+    +'<td style="padding:8px 10px">Client</td>'
+    +'<td style="padding:8px 10px">Secteur</td>'
+    +'<td style="padding:8px 10px;text-align:center">Factures</td>'
+    +'<td style="padding:8px 10px;text-align:right">CA factur\u00e9</td>'
+    +'<td style="padding:8px 10px;text-align:right">Encaiss\u00e9</td></tr>';
+  clients.forEach(function(c,i){
+    var tr=document.createElement('tr');
+    tr.style.background=i%2===0?'#fff':'#F8F7F4';
+    var medal=i===0?'\ud83e\udd47':i===1?'\ud83e\udd48':i===2?'\ud83e\udd49':'';
+    tr.innerHTML='<td style="padding:7px 10px;color:#888780">'+(i+1)+medal+'</td>'
+      +'<td style="padding:7px 10px;font-weight:bold">'+c.nom+'</td>'
+      +'<td style="padding:7px 10px;color:#888780">'+c.secteur+'</td>'
       +'<td style="padding:7px 10px;text-align:center"><span style="background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:999px;font-weight:bold">'+c.factures+'</span></td>'
       +'<td style="padding:7px 10px;text-align:right;font-weight:bold;color:#185FA5">'+fmt(c.montantTotal)+'</td>'
-      +'<td style="padding:7px 10px;text-align:right;font-weight:bold;color:#3B6D11">'+fmt(c.encaisse)+'</td></tr>';
-  }).join('');
-  html+='</table></div>';
-  html+='<div style="font-size:14px;font-weight:bold;color:#185FA5;margin-bottom:10px">&#128202; CA par secteur</div>';
-  html+='<div style="background:#fff;border:0.5px solid #D3D1C7;border-radius:8px;padding:14px">';
-  html+=secteurs.map(function(s){
+      +'<td style="padding:7px 10px;text-align:right;font-weight:bold;color:#3B6D11">'+fmt(c.encaisse)+'</td>';
+    tbl.appendChild(tr);
+  });
+  tblWrap.appendChild(tbl);
+  div.appendChild(tblWrap);
+  var h2=document.createElement('div');
+  h2.style.cssText='font-size:14px;font-weight:bold;color:#185FA5;margin-bottom:10px';
+  h2.textContent='\ud83d\udcca CA par secteur';
+  div.appendChild(h2);
+  var sectDiv=document.createElement('div');
+  sectDiv.style.cssText='background:#fff;border:0.5px solid #D3D1C7;border-radius:8px;padding:14px';
+  secteurs.forEach(function(s){
     var pct=totalSect>0?Math.round(s.montant/totalSect*100):0;
-    return '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px">'
+    var row=document.createElement('div');
+    row.style.marginBottom='12px';
+    row.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px">'
       +'<span style="font-weight:bold">'+s.nom+'</span>'
-      +'<span style="color:#888780">'+s.nb+' facture(s) · '+fmt(s.montant)+' ('+pct+'%)</span></div>'
+      +'<span style="color:#888780">'+s.nb+' facture(s) \u00b7 '+fmt(s.montant)+' ('+pct+'%)</span></div>'
       +'<div style="background:#F1EFE8;border-radius:999px;height:8px;overflow:hidden">'
-      +'<div style="background:#185FA5;height:100%;width:'+pct+'%;border-radius:999px"></div></div></div>';
-  }).join('');
+      +'<div style="background:#185FA5;height:100%;width:'+pct+'%;border-radius:999px"></div></div>';
+    sectDiv.appendChild(row);
+  });
+  div.appendChild(sectDiv);
+  el.innerHTML='';
+  el.appendChild(div);
+}
+
+
+function coloriserCartes(){
+  document.querySelectorAll('.card[data-commercial]').forEach(function(card){
+    var comm = card.getAttribute('data-commercial');
+    var c = getC(comm);
+    if(c){
+      card.style.borderLeft = '4px solid '+c.couleur;
+      card.style.borderRadius = '0 6px 6px 0';
+    }
+  });
+}
+
+// Nettoyer les résidus texte du body
+(function(){
+  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  var toRemove = [];
+  var node;
+  while(node = walker.nextNode()){
+    if(node.textContent.trim() === '8">') toRemove.push(node);
+  }
+  toRemove.forEach(function(n){ if(n.parentNode) n.parentNode.removeChild(n); });
+})();
+
+function renderHistorique(){
+  var el=document.getElementById('tab-historique');
+  if(!el) return;
+  var dossiers=G_DOSSIERS.filter(function(d){return estDansHistorique(d);});
+  dossiers.sort(function(a,b){return new Date(dateDernierPaiement(b)||0)-new Date(dateDernierPaiement(a)||0);});
+  var html='<div style="max-width:1100px;margin:0 auto;padding:12px">';
+  html+='<div style="font-size:14px;font-weight:800;color:var(--noir);margin-bottom:16px">&#128193; Historique des dossiers soldés <span style="font-size:11px;font-weight:400;color:var(--gris)">('+dossiers.length+' dossier(s) — 12 derniers mois)</span></div>';
+  if(!dossiers.length){
+    html+='<div class="empty">Aucun dossier dans l\'historique pour le moment.</div>';
+  } else {
+    html+='<div style="background:var(--blanc);border:1px solid var(--gris-l);border-radius:10px;overflow:hidden">';
+    html+='<table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html+='<thead><tr style="background:var(--noir);color:#fff">'
+         +'<td style="padding:10px 14px">N° Dossier</td><td style="padding:10px 14px">Client</td>'
+         +'<td style="padding:10px 14px">Secteur</td><td style="padding:10px 14px">Commercial</td>'
+         +'<td style="padding:10px 14px;text-align:right">Montant</td>'
+         +'<td style="padding:10px 14px;text-align:center">Date paiement</td>'
+         +'<td style="padding:10px 14px;text-align:center">Expire le</td>'
+         +'</tr></thead><tbody>';
+    html+=dossiers.map(function(d,i){
+      var bg=i%2===0?'var(--blanc)':'var(--fond)';
+      var datePaie=dateDernierPaiement(d)||'—';
+      var dateExpire='—';
+      if(datePaie!=='—'){var exp=new Date(datePaie);exp.setFullYear(exp.getFullYear()+1);dateExpire=exp.toISOString().substring(0,10);}
+      var c=getC(d.commercial);
+      return '<tr style="background:'+bg+';border-bottom:1px solid var(--gris-l)">'
+        +'<td style="padding:10px 14px;font-weight:700">'+d.num+'</td>'
+        +'<td style="padding:10px 14px;font-weight:600">'+d.client+'</td>'
+        +'<td style="padding:10px 14px;color:var(--gris)">'+(d.secteur||'—')+'</td>'
+        +'<td style="padding:10px 14px"><span style="background:'+c.bg+';color:'+c.couleur+';padding:2px 8px;border-radius:999px;font-weight:700;font-size:11px">'+c.nom+'</span></td>'
+        +'<td style="padding:10px 14px;text-align:right;font-weight:800;color:#185FA5">'+fmt(d.montant)+'</td>'
+        +'<td style="padding:10px 14px;text-align:center;color:var(--vert);font-weight:600">'+datePaie+'</td>'
+        +'<td style="padding:10px 14px;text-align:center;color:var(--orange);font-size:11px">'+dateExpire+'</td>'
+        +'</tr>';
+    }).join('');
+    html+='</tbody></table></div>';
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function renderStats(){
+  var el=document.getElementById('tab-stats');
+  if(!el) return;
+  var nbMois=parseInt((document.getElementById('statPeriode')||{value:'12'}).value||'12');
+  var maintenant=new Date();
+  // Partir de janvier de l'année courante
+  var annee = maintenant.getFullYear();
+  var moisCourant = maintenant.getMonth(); // 0-11
+  var mois=[];
+  // Générer depuis janvier jusqu'au mois courant (inclus)
+  for(var i=0; i<=moisCourant; i++){
+    var d=new Date(annee, i, 1);
+    mois.push({key:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),
+               label:['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'][d.getMonth()]+' '+d.getFullYear().toString().substring(2)});
+  }
+  var factures=G_DOSSIERS.filter(function(d){return d.etape>=4&&d.date_facture;});
+  var caParMois={};mois.forEach(function(m){caParMois[m.key]=0;});
+  factures.forEach(function(d){var k=d.date_facture.substring(0,7);if(caParMois[k]!==undefined)caParMois[k]+=(parseFloat(d.montant)||0);});
+  var encParMois={};mois.forEach(function(m){encParMois[m.key]=0;});
+  G_DOSSIERS.forEach(function(d){getVersements(d).filter(function(v){return v.recu&&v.date_recu;}).forEach(function(v){var k=v.date_recu.substring(0,7);if(encParMois[k]!==undefined)encParMois[k]+=(parseFloat(v.montant_recu||v.montant)||0);});});
+  var caCommParMois={};
+  COMMERCIAUX.forEach(function(c){caCommParMois[c.id]={};mois.forEach(function(m){caCommParMois[c.id][m.key]=0;});});
+  factures.forEach(function(d){var k=d.date_facture.substring(0,7);var cid=d.commercial||'C1';if(caCommParMois[cid]&&caCommParMois[cid][k]!==undefined)caCommParMois[cid][k]+=(parseFloat(d.montant)||0);});
+  var totalParComm={};
+  COMMERCIAUX.forEach(function(c){totalParComm[c.id]=factures.filter(function(d){return d.commercial===c.id;}).reduce(function(s,d){return s+(parseFloat(d.montant)||0);},0);});
+  var totalGeneral=factures.reduce(function(s,d){return s+(parseFloat(d.montant)||0);},0);
+  var totalEnc2=G_DOSSIERS.reduce(function(s,d){return s+totalEnc(d);},0);
+  var delais=[];
+  G_DOSSIERS.filter(function(d){return estSolde(d)&&d.date_facture;}).forEach(function(d){var dp=dateDernierPaiement(d);if(dp){var j=Math.round((new Date(dp)-new Date(d.date_facture))/(1000*86400));if(j>=0)delais.push(j);}});
+  var delaiMoyen=delais.length?Math.round(delais.reduce(function(a,b){return a+b;},0)/delais.length):0;
+  var txRec=totalGeneral>0?Math.round(totalEnc2/totalGeneral*100):0;
+  var panierMoyen=factures.length?Math.round(totalGeneral/factures.length):0;
+  var maxCA=Math.max.apply(null,mois.map(function(m){return caParMois[m.key]||0;}))||1;
+
+  var html='<div style="max-width:1100px;margin:0 auto;padding:12px">';
+  // Sélecteur
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">'
+       +'<span style="font-size:14px;font-weight:800;color:var(--noir)">&#128202; Statistiques &amp; Évolution</span>'
+       +'<span style="font-size:12px;font-weight:600;color:var(--gris);background:var(--fond);padding:6px 14px;border-radius:8px;border:1px solid var(--gris-l)">'
+       +'Janvier — '+['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'][maintenant.getMonth()]+' '+maintenant.getFullYear()
+       +'</span></div>';
+  // KPI
+  html+='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px">';
+  [{l:'CA Total Facturé',v:fmt(totalGeneral),c:'#185FA5'},
+   {l:'Total Encaissé',v:fmt(totalEnc2),c:'var(--vert)'},
+   {l:'Taux Recouvrement',v:txRec+'%',c:txRec>=80?'var(--vert)':txRec>=50?'var(--orange)':'var(--rouge)'},
+   {l:'Délai Moyen Paiement',v:delaiMoyen+'j',c:'var(--orange)'},
+   {l:'Panier Moyen',v:fmt(panierMoyen),c:'var(--noir)'}
+  ].forEach(function(k){
+    html+='<div style="background:var(--blanc);border:1px solid var(--gris-l);border-top:3px solid var(--or);border-radius:10px;padding:14px;text-align:center">'
+         +'<div style="font-size:9px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">'+k.l+'</div>'
+         +'<div style="font-size:18px;font-weight:800;color:'+k.c+'">'+k.v+'</div></div>';
+  });
+  html+='</div>';
+  // Barres CA mensuel
+  html+='<div style="background:var(--blanc);border:1px solid var(--gris-l);border-radius:10px;padding:18px;margin-bottom:16px">';
+  html+='<div style="font-size:12px;font-weight:800;color:var(--noir);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.5px">CA Facturé vs Encaissé par mois</div>';
+  html+='<div style="display:flex;align-items:flex-end;gap:4px;height:140px">';
+  mois.forEach(function(m){
+    var ca=caParMois[m.key]||0,enc=encParMois[m.key]||0;
+    var hCA=ca>0?Math.max(8,Math.round(ca/maxCA*100)):2;
+    var hEnc=enc>0?Math.max(4,Math.round(enc/maxCA*100)):0;
+    html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">'
+         +'<div style="font-size:8px;color:var(--gris);font-weight:600;text-align:center">'+(ca>0?Math.round(ca/1000)+'k':'')+'</div>'
+         +'<div style="width:100%;display:flex;gap:1px;align-items:flex-end;height:100px">'
+         +'<div style="flex:1;background:var(--or);border-radius:3px 3px 0 0;height:'+hCA+'px;min-height:2px"></div>'
+         +'<div style="flex:1;background:var(--vert);border-radius:3px 3px 0 0;height:'+hEnc+'px;min-height:'+(enc>0?2:0)+'px;opacity:0.7"></div>'
+         +'</div>'
+         +'<div style="font-size:8px;color:var(--gris);white-space:nowrap;text-align:center">'+m.label+'</div>'
+         +'</div>';
+  });
+  html+='</div>';
+  html+='<div style="display:flex;gap:16px;margin-top:6px;font-size:10px">'
+       +'<span><span style="display:inline-block;width:10px;height:10px;background:var(--or);border-radius:2px;margin-right:4px"></span>CA Facturé</span>'
+       +'<span><span style="display:inline-block;width:10px;height:10px;background:var(--vert);border-radius:2px;margin-right:4px;opacity:0.7"></span>Encaissé</span>'
+       +'</div></div>';
+  // Tableau commerciaux
+  html+='<div style="background:var(--blanc);border:1px solid var(--gris-l);border-radius:10px;padding:18px;margin-bottom:16px">';
+  html+='<div style="font-size:12px;font-weight:800;color:var(--noir);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.5px">Performance par commercial</div>';
+  html+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
+  html+='<thead><tr style="background:var(--fond)"><td style="padding:8px 12px;font-weight:700;color:var(--gris)">Commercial</td>';
+  mois.forEach(function(m){html+='<td style="padding:8px 6px;text-align:center;font-weight:700;color:var(--gris);font-size:10px">'+m.label+'</td>';});
+  html+='<td style="padding:8px 12px;text-align:right;font-weight:700;color:var(--gris)">Total</td><td style="padding:8px 12px;text-align:center;font-weight:700;color:var(--gris)">Part</td></tr></thead><tbody>';
+  COMMERCIAUX.forEach(function(c,idx){
+    var total=totalParComm[c.id]||0;
+    var pct=totalGeneral>0?Math.round(total/totalGeneral*100):0;
+    html+='<tr style="background:'+(idx%2===0?'var(--blanc)':'var(--fond)')+';border-bottom:1px solid var(--gris-l)">'
+         +'<td style="padding:8px 12px"><span style="display:inline-flex;align-items:center;gap:6px">'
+         +'<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+c.couleur+'"></span>'
+         +'<strong style="color:'+c.couleur+'">'+c.nom+'</strong></span></td>';
+    mois.forEach(function(m){
+      var v=(caCommParMois[c.id]&&caCommParMois[c.id][m.key])||0;
+      html+='<td style="padding:8px 6px;text-align:center;color:'+(v>0?'#185FA5':'var(--gris-l)')+';font-weight:'+(v>0?700:400)+'">'+(v>0?Math.round(v/1000)+'k':'—')+'</td>';
+    });
+    html+='<td style="padding:8px 12px;text-align:right;font-weight:800;color:#185FA5">'+fmt(total)+'</td>'
+         +'<td style="padding:8px 12px;text-align:center"><div style="background:'+c.bg+';color:'+c.couleur+';padding:2px 8px;border-radius:999px;font-weight:700;font-size:10px">'+pct+'%</div></td></tr>';
+  });
+  html+='<tr style="background:var(--noir);color:#fff;font-weight:700"><td style="padding:8px 12px">TOTAL</td>';
+  mois.forEach(function(m){html+='<td style="padding:8px 6px;text-align:center;font-size:10px">'+(caParMois[m.key]?Math.round(caParMois[m.key]/1000)+'k':'—')+'</td>';});
+  html+='<td style="padding:8px 12px;text-align:right">'+fmt(totalGeneral)+'</td><td style="padding:8px 12px;text-align:center">100%</td></tr>';
+  html+='</tbody></table></div></div>';
+  // CA par secteur
+  var secteursMap={};
+  factures.forEach(function(d){var s=d.secteur||'Non défini';if(!secteursMap[s])secteursMap[s]={nom:s,nb:0,montant:0,encaisse:0};secteursMap[s].nb++;secteursMap[s].montant+=(parseFloat(d.montant)||0);secteursMap[s].encaisse+=totalEnc(d);});
+  var secteurs=Object.values(secteursMap).sort(function(a,b){return b.montant-a.montant;});
+  var totalSect=secteurs.reduce(function(s,x){return s+x.montant;},0);
+  html+='<div style="background:var(--blanc);border:1px solid var(--gris-l);border-radius:10px;padding:18px;margin-bottom:16px">';
+  html+='<div style="font-size:12px;font-weight:800;color:var(--noir);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.5px">CA &amp; Recouvrement par secteur</div>';
+  secteurs.forEach(function(s){
+    var pct=totalSect>0?Math.round(s.montant/totalSect*100):0;
+    var txEnc=s.montant>0?Math.round(s.encaisse/s.montant*100):0;
+    html+='<div style="margin-bottom:12px">'
+         +'<div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:11px">'
+         +'<span style="font-weight:700">'+s.nom+'</span>'
+         +'<span style="color:var(--gris)">'+s.nb+' dossier(s) · '+Math.round(s.montant/1000)+'k FCFA ('+pct+'%) · Recouvré: <strong style="color:var(--vert)">'+txEnc+'%</strong></span></div>'
+         +'<div style="background:var(--gris-l);border-radius:999px;height:10px;overflow:hidden;position:relative">'
+         +'<div style="background:var(--or);height:100%;width:'+pct+'%;border-radius:999px;position:absolute;left:0;top:0"></div>'
+         +'<div style="background:var(--vert);height:100%;width:'+Math.round(pct*txEnc/100)+'%;border-radius:999px;position:absolute;left:0;top:0;opacity:0.8"></div>'
+         +'</div></div>';
+  });
   html+='</div></div>';
   el.innerHTML=html;
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+//  ONGLET CONTACTS
+// ═══════════════════════════════════════════════════════════════
+var G_CONTACTS = [];
+var G_CONTACT_EN_COURS = null; // id du contact en cours d'édition // contacts depuis Supabase
+
+async function chargerContacts(){
+  try {
+    var res = await SB.from('contacts').select('*').order('client', {ascending:true});
+    if(!res.error) G_CONTACTS = res.data || [];
+  } catch(e){ console.error('Erreur contacts:', e); }
+  renderContacts();
+}
+
+async function sauverContact(data){
+  try {
+    var res;
+    if(data.id && data.id !== ''){
+      res = await SB.from('contacts').update(data).eq('id', data.id);
+    } else {
+      res = await SB.from('contacts').insert(data);
+    }
+    if(res.error) throw res.error;
+    await chargerContacts();
+  } catch(e){ alert('Erreur sauvegarde contact: '+e.message); }
+}
+
+async function supprimerContact(id){
+  if(!confirm('Supprimer ce contact ?')) return;
+  try {
+    await SB.from('contacts').delete().eq('id', id);
+    await chargerContacts();
+  } catch(e){ alert('Erreur suppression: '+e.message); }
+}
+
+function renderContacts(){
+  var el = document.getElementById('tab-contacts');
+  if(!el) return;
+
+  var q = (document.getElementById('searchContact')||{value:''}).value.toLowerCase();
+  var filtres = G_CONTACTS.filter(function(c){
+    return !q || (c.client||'').toLowerCase().includes(q)
+              || (c.nom||'').toLowerCase().includes(q)
+              || (c.telephone||'').toLowerCase().includes(q)
+              || (c.email||'').toLowerCase().includes(q);
+  });
+
+  // Regrouper par client
+  var parClient = {};
+  filtres.forEach(function(c){
+    var cl = c.client||'—';
+    if(!parClient[cl]) parClient[cl] = [];
+    parClient[cl].push(c);
+  });
+  var clients = Object.keys(parClient).sort();
+
+  var canEdit = (G_ROLE === 'admin' || G_ROLE === 'contributeur');
+
+  var html = '<div style="max-width:1100px;margin:0 auto;padding:12px">';
+
+  // Barre de recherche + bouton ajouter
+  html += '<div style="display:flex;gap:10px;margin-bottom:20px;align-items:center">';
+  html += '<input id="searchContact" type="text" autocomplete="off" placeholder="Rechercher un contact, client, téléphone..." '
+        + 'value="'+q+'" oninput="renderContacts()" '
+        + 'style="flex:1;padding:9px 14px;border-radius:8px;border:1px solid var(--gris-l);font-size:13px;outline:none">';
+  if(canEdit){
+    html += '<button class="btn btn-p" onclick="ouvrirFormulaireContact(null)">+ Nouveau contact</button>';
+  }
+  html += '</div>';
+
+  if(!filtres.length){
+    html += '<div class="empty">Aucun contact trouvé.</div>';
+  } else {
+    clients.forEach(function(cl){
+      var contacts = parClient[cl];
+      html += '<div style="margin-bottom:20px">';
+      // En-tête client
+      html += '<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;'
+            + 'color:var(--noir);background:var(--fond);padding:8px 14px;border-radius:8px 8px 0 0;'
+            + 'border:1px solid var(--gris-l);border-bottom:none">'+cl+'</div>';
+      html += '<div style="background:var(--blanc);border:1px solid var(--gris-l);border-radius:0 0 8px 8px;overflow:hidden">';
+      contacts.forEach(function(c, i){
+        var bg = i%2===0 ? 'var(--blanc)' : 'var(--fond)';
+        html += '<div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:'+bg+';'
+              + 'border-bottom:'+(i<contacts.length-1?'1px solid var(--gris-l)':'none')+'">';
+        // Avatar initiales
+        var initiales = (c.nom||'?').split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
+        html += '<div style="width:38px;height:38px;border-radius:50%;background:var(--or);color:var(--noir);'
+              + 'display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">'+initiales+'</div>';
+        // Infos
+        html += '<div style="flex:1">';
+        html += '<div style="font-weight:700;font-size:13px;color:var(--texte)">'+(c.nom||'—')+'</div>';
+        if(c.adresse) html += '<div style="font-size:11px;color:var(--gris);margin-top:2px">'+c.adresse+'</div>';
+        html += '</div>';
+        // Téléphone
+        html += '<div style="text-align:center;min-width:140px">';
+        if(c.telephone){
+          html += '<a href="tel:'+c.telephone+'" style="display:inline-flex;align-items:center;gap:6px;'
+                + 'background:#E8F8F0;color:var(--vert);padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none">'
+                + '&#128222; '+c.telephone+'</a>';
+        } else {
+          html += '<span style="color:var(--gris-l);font-size:12px">—</span>';
+        }
+        html += '</div>';
+        // Email
+        html += '<div style="text-align:center;min-width:180px">';
+        if(c.email){
+          html += '<a href="mailto:'+c.email+'" style="display:inline-flex;align-items:center;gap:6px;'
+                + 'background:#EEF2F8;color:#185FA5;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none">'
+                + '&#9993; '+c.email+'</a>';
+        } else {
+          html += '<span style="color:var(--gris-l);font-size:12px">—</span>';
+        }
+        html += '</div>';
+        // Actions
+        if(canEdit){
+          html += '<div style="display:flex;gap:6px">';
+          html += '<button class="btn btn-sm" onclick="ouvrirFormulaireContact(\"'+c.id+'\")" title="Modifier">&#9999;</button>';
+          html += '<button class="btn btn-sm btn-r" onclick="supprimerContact(\"'+c.id+'\")" title="Supprimer">&#128465;</button>';
+          html += '</div>';
+        }
+        html += '</div>';
+      });
+      html += '</div></div>';
+    });
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function ouvrirFormulaireContact(id){
+  G_CONTACT_EN_COURS = id || null;
+  var c = id ? (G_CONTACTS.find(function(x){return x.id===id;}) || {}) : {};
+  // Pré-remplir le client depuis les dossiers existants
+  var clientsConnus = [...new Set(G_DOSSIERS.map(function(d){return d.client;}).filter(Boolean))].sort();
+
+  var modal = document.getElementById('modalDossier');
+  modal.innerHTML = '<h3>'+(id ? '✏️ Modifier le contact' : '+ Nouveau contact')+'</h3>'
+    + '<div class="modal-sub">Interlocuteur client</div>'
+    + '<div class="fr"><label>Client</label>'
+    + '<select id="cClient" style="padding:9px 12px;border-radius:8px;border:1px solid var(--gris-l);font-size:13px">'
+    + '<option value="">Sélectionner un client...</option>'
+    + clientsConnus.map(function(cl){ return '<option value="'+cl+'"'+(c.client===cl?' selected':'')+'>'+cl+'</option>'; }).join('')
+    + '</select></div>'
+    + '<div class="fr2">'
+    + '<div class="fr"><label>Nom &amp; Prénom</label><input id="cNom" value="'+(c.nom||'')+'" placeholder="Jean Dupont"></div>'
+    + '<div class="fr"><label>Téléphone (indicatif inclus)</label><input id="cTel" value="'+(c.telephone||'')+'" placeholder="+242 06 000 0000"></div>'
+    + '</div>'
+    + '<div class="fr2">'
+    + '<div class="fr"><label>Email</label><input id="cEmail" type="email" value="'+(c.email||'')+'" placeholder="jean@exemple.com"></div>'
+    + '<div class="fr"><label>Adresse</label><input id="cAdresse" value="'+(c.adresse||'')+'" placeholder="Brazzaville, Congo"></div>'
+    + '</div>'
+    + '<div class="fr"><label>Notes</label><textarea id="cNotes" rows="2" style="padding:9px 12px;border-radius:8px;border:1px solid var(--gris-l);font-size:13px;font-family:inherit;resize:vertical">'+(c.notes||'')+'</textarea></div>'
+    + '<div class="fa">'
+    + '<button class="btn" onclick="fermerOverlay(\'overlayDossier\')">Annuler</button>'
+    + '<button class="btn btn-p" onclick="soumettreContact()">Enregistrer</button>'
+    + '</div>';
+  document.getElementById('overlayDossier').classList.add('open');
+}
+
+function soumettreContact(){
+  var id = G_CONTACT_EN_COURS;
+  if(G_ROLE !== 'admin' && G_ROLE !== 'contributeur'){ alert('Connexion requise pour enregistrer.'); return; }
+  var client = document.getElementById('cClient').value.trim();
+  var nom = document.getElementById('cNom').value.trim();
+  if(!client){ alert('Veuillez sélectionner un client.'); return; }
+  if(!nom){ alert('Le nom est obligatoire.'); return; }
+  var data = {
+    client: client,
+    nom: nom,
+    telephone: document.getElementById('cTel').value.trim(),
+    email: document.getElementById('cEmail').value.trim(),
+    adresse: document.getElementById('cAdresse').value.trim(),
+    notes: document.getElementById('cNotes').value.trim(),
+  };
+  if(id && id !== '') data.id = id;
+  fermerOverlay('overlayDossier');
+  sauverContact(data);
 }
 
 charger();

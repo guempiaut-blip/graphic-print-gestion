@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graphic Print — Production</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --noir:#1A1A2E;--marine:#16213E;--or:#C9A84C;--or-clair:#E8C96A;--or-bg:#FBF5E6;
+  --fond:#F0EFE9;--blanc:#FFFFFF;--gris:#6B6B6B;--gris-l:#E8E6E0;--texte:#1A1A2E;
+  --vert:#2D7A4F;--rouge:#C0392B;--orange:#D68910;--bleu:#185FA5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--fond);color:var(--texte);font-size:13px}
+.topbar{background:linear-gradient(135deg,var(--noir) 0%,var(--marine) 100%);color:#fff;
+  padding:0 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;
+  height:52px;box-shadow:0 2px 12px rgba(0,0,0,0.25)}
+.topbar-title{font-size:12px;font-weight:700;flex:1;letter-spacing:1.5px;text-transform:uppercase}
+.topbar-title span{color:var(--or)}
+.badge-or{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:var(--or);color:var(--noir)}
+.btn-top{font-size:12px;padding:6px 14px;border-radius:6px;border:1px solid rgba(201,168,76,0.4);
+  background:rgba(201,168,76,0.12);color:#fff;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-top:hover{background:var(--or);color:var(--noir)}
+.tabs{display:flex;background:var(--blanc);border-bottom:2px solid var(--gris-l);padding:0 24px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.tab{padding:14px 20px;font-size:11px;font-weight:700;color:var(--gris);cursor:pointer;
+  border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;
+  letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap}
+.tab:hover{color:var(--or);background:var(--or-bg)}
+.tab.active{color:var(--noir);border-bottom:3px solid var(--or);font-weight:800}
+.container{max-width:1400px;margin:0 auto;padding:20px 24px}
+.tab-content{display:none}.tab-content.active{display:block}
+.btn{padding:8px 16px;border-radius:8px;border:1px solid var(--gris-l);background:var(--blanc);
+  color:var(--texte);cursor:pointer;font-size:12px;font-weight:600;transition:all 0.2s}
+.btn:hover{border-color:var(--or);color:var(--or)}
+.btn-p{background:linear-gradient(135deg,var(--or),var(--or-clair));color:var(--noir);
+  border-color:var(--or);box-shadow:0 2px 8px rgba(201,168,76,0.3)}
+.btn-p:hover{box-shadow:0 4px 16px rgba(201,168,76,0.5);transform:translateY(-1px)}
+.btn-r{background:#fff0f0;color:var(--rouge);border-color:#ffcccc}
+.btn-g{background:#e8f8f0;color:var(--vert);border-color:#b8e8cc}
+.btn-sm{font-size:11px;padding:5px 10px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--blanc);border:1px solid var(--gris-l);border-radius:10px;padding:14px;
+  text-align:center;border-top:3px solid var(--or)}
+.kpi-l{font-size:9px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.kpi-v{font-size:20px;font-weight:800}
+.kpi-v.blu{color:var(--bleu)}.kpi-v.grn{color:var(--vert)}.kpi-v.red{color:var(--rouge)}.kpi-v.ora{color:var(--orange)}
+.toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+.toolbar input,.toolbar select{padding:8px 12px;border-radius:8px;border:1px solid var(--gris-l);
+  background:var(--blanc);font-size:12px;outline:none;transition:border 0.2s}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--or)}
+.toolbar input{flex:1;min-width:180px}
+.overlay{position:fixed;inset:0;background:rgba(26,26,46,0.65);z-index:200;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.overlay.open{display:flex}
+.modal{background:var(--blanc);border-radius:14px;padding:28px;
+  width:min(720px,95vw);max-height:92vh;overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.modal h3{font-size:15px;font-weight:800;color:var(--noir);margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--gris);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--gris-l)}
+.fr{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fr label{font-size:10px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:0.5px}
+.fr input,.fr select,.fr textarea{padding:9px 12px;border-radius:8px;border:1px solid var(--gris-l);
+  font-size:13px;outline:none;transition:border 0.2s;font-family:inherit;background:var(--blanc)}
+.fr input:focus,.fr select:focus,.fr textarea:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(201,168,76,0.12)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.fa{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--gris-l)}
+.table-wrap{background:var(--blanc);border:1px solid var(--gris-l);border-radius:10px;overflow:hidden}
+.dtable{width:100%;border-collapse:collapse;font-size:12px}
+.dtable thead tr{background:var(--noir);color:#fff}
+.dtable thead td{padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.dtable tbody tr{border-bottom:1px solid var(--gris-l)}
+.dtable tbody tr:last-child{border-bottom:none}
+.dtable tbody tr:hover{background:var(--or-bg)}
+.dtable tbody td{padding:10px 14px;vertical-align:middle}
+.statut{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700}
+.s-dispo{background:#E8F8F0;color:var(--vert)}
+.s-occupe{background:#FEF3E2;color:var(--orange)}
+.s-panne{background:#FDEDEC;color:var(--rouge)}
+.s-warn{background:#FEF3E2;color:var(--orange)}
+.s-attente{background:#FEF9E7;color:#C07A00}
+.s-prod{background:#FEF3E2;color:var(--orange)}
+.s-ok{background:#E8F8F0;color:var(--vert)}
+.s-livrer{background:#EEF2F8;color:var(--bleu)}
+.s-livre{background:#F0EFE9;color:var(--gris)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.machine-card{background:var(--blanc);border:1px solid var(--gris-l);border-radius:10px;
+  padding:14px;transition:all 0.2s;cursor:pointer}
+.machine-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.machine-card.occupe{border-color:var(--orange);border-left:4px solid var(--orange)}
+.machine-card.panne{border-color:var(--rouge);border-left:4px solid var(--rouge);opacity:0.8}
+.machine-card.dispo{border-left:4px solid var(--vert)}
+.atelier-section{margin-bottom:28px}
+.atelier-header{display:flex;align-items:center;gap:12px;padding:12px 16px;
+  border-radius:10px 10px 0 0;color:#fff;margin-bottom:0}
+.machines-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;
+  padding:12px;background:var(--fond);border:1px solid var(--gris-l);border-top:none;border-radius:0 0 10px 10px}
+.prod-badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:700}
+.planning-wrap{overflow-x:auto}
+.planning-tbl{border-collapse:collapse;font-size:11px;min-width:100%}
+.planning-tbl th{padding:8px 10px;background:var(--noir);color:#fff;
+  font-size:10px;font-weight:700;text-transform:uppercase;white-space:nowrap;text-align:center}
+.planning-tbl .rl{background:var(--fond);font-weight:700;color:var(--texte);
+  min-width:180px;white-space:nowrap;padding:8px 12px;border:1px solid var(--gris-l)}
+.planning-tbl td{padding:4px 6px;border:1px solid var(--gris-l);min-width:90px;vertical-align:top}
+.pcell{padding:3px 7px;border-radius:4px;font-size:10px;font-weight:600;margin:1px 0;cursor:pointer}
+.pcell-prod{background:var(--or-bg);color:#8B6914}
+.pcell-urgent{background:#FDEDEC;color:var(--rouge)}
+.pcell-ok{background:#E8F8F0;color:var(--vert)}
+.empty{padding:24px;text-align:center;color:var(--gris);font-style:italic;font-size:12px}
+.login-box{max-width:360px;margin:80px auto;background:var(--blanc);border-radius:14px;
+  padding:32px;box-shadow:0 8px 32px rgba(0,0,0,0.12)}
+.section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;
+  color:var(--gris);margin-bottom:10px}
+.alert-box{padding:12px 16px;border-radius:8px;font-size:12px;margin-bottom:12px}
+.alert-warn{background:#FEF3E2;color:#8B4A00;border-left:3px solid var(--orange)}
+.alert-err{background:#FDEDEC;color:var(--rouge);border-left:3px solid var(--rouge)}
+.alert-ok{background:#E8F8F0;color:var(--vert);border-left:3px solid var(--vert)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title"><span>🏭</span> GRAPHIC PRINT — PRODUCTION</div>
+  <span id="modeBadge" class="badge-or" style="display:none">Admin</span>
+  <a href="https://graphic-print-gestions.pages.dev/" class="btn-top">← Commercial</a>
+  <button class="btn-top" id="btnCo" onclick="ouvrirLogin()">Connexion</button>
+  <button class="btn-top" id="btnDeco" style="display:none" onclick="deconnecter()">Déconnexion</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('dashboard',this)">📊 Vue d'ensemble</div>
+  <div class="tab" onclick="switchTab('dossiers',this)">📋 Dossiers Production</div>
+  <div class="tab" onclick="switchTab('machines',this)">🖨️ Machines</div>
+  <div class="tab" onclick="switchTab('machinistes',this)">👷 Machinistes</div>
+  <div class="tab" onclick="switchTab('planning',this)">📅 Planning</div>
+  <div class="tab" onclick="switchTab('livraisons',this)">🚚 Livraisons</div>
+</div>
+
+<div class="container">
+  <div class="tab-content active" id="tab-dashboard"></div>
+  <div class="tab-content" id="tab-dossiers">
+    <div class="toolbar">
+      <input type="text" id="srchDos" autocomplete="off" placeholder="Client, N° dossier..." oninput="renderDossiers()">
+      <select id="filStatut" onchange="renderDossiers()">
+        <option value="">Tous statuts</option>
+        <option value="non_lance">En attente lancement</option>
+        <option value="en_production">En production</option>
+        <option value="prod_termine">Production terminée</option>
+        <option value="pret_livrer">Prêt à livrer</option>
+        <option value="livre">Livré</option>
+      </select>
+      <select id="filAtelier" onchange="renderDossiers()">
+        <option value="">Tous ateliers</option>
+      </select>
+    </div>
+    <div id="dossiers-list"></div>
+  </div>
+  <div class="tab-content" id="tab-machines">
+  <div class="toolbar" id="toolbar-machines">
+    <button class="btn btn-p" id="btnAddAtelier" style="display:none" onclick="ouvrirFormAtelier(null)">+ Nouvel atelier</button>
+    <button class="btn btn-p" id="btnAddMachine" style="display:none" onclick="ouvrirFormMachineDB(null)">+ Nouvelle machine</button>
+  </div>
+  <div id="machines-content"></div>
+</div>
+  <div class="tab-content" id="tab-machinistes">
+    <div class="toolbar">
+      <input type="text" id="srchMach" autocomplete="off" placeholder="Rechercher machiniste..." oninput="renderMachinistes()">
+      <span id="btnAddMach"></span> <!-- bouton géré dans renderMachinistes -->
+    </div>
+    <div id="machinistes-list"></div>
+  </div>
+  <div class="tab-content" id="tab-livraisons"></div>
+<div class="tab-content" id="tab-planning">
+    <div class="toolbar">
+      <select id="planSemaine" onchange="renderPlanning()"></select>
+      <select id="planAtelier" onchange="renderPlanning()">
+        <option value="">Tous ateliers</option>
+      </select>
+    </div>
+    <div id="planning-wrap"></div>
+  </div>
+</div>
+
+<!-- OVERLAYS -->
+<div class="overlay" id="ovLogin">
+  <div class="login-box">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:16px;font-weight:800;color:var(--noir);letter-spacing:1px">PRODUCTION</div>
+      <div style="font-size:11px;color:var(--gris);margin-top:4px">Graphic Print</div>
+    </div>
+    <div class="fr"><label>Mot de passe</label>
+      <input type="password" id="pwdIn" autocomplete="off" placeholder="••••••••" onkeydown="if(event.key===\'Enter\') validerLogin()">
+    </div>
+    <div id="loginErr" style="color:var(--rouge);font-size:12px;margin-bottom:10px;display:none">Mot de passe incorrect.</div>
+    <div class="fa" style="border:none;padding:0;margin:0">
+      <button class="btn" onclick="fermer(\'ovLogin\')">Annuler</button>
+      <button class="btn btn-p" onclick="validerLogin()">Connexion</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ovProd"><div class="modal" id="modProd"></div></div>
+<div class="overlay" id="ovMach"><div class="modal" id="modMach"></div></div>
+<div class="overlay" id="ovMachiniste"><div class="modal" id="modMachiniste"></div></div>
+<div class="overlay" id="ovAtelier"><div class="modal" id="modAtelier"></div></div>
+<div class="overlay" id="ovMachineDB"><div class="modal" id="modMachineDB"></div></div>
+
+<script>
+const SB = supabase.createClient(
+  'https://wfbdygrvvnaiwesefwmk.supabase.co',
+  'sb_publishable_aa-fC7neU8yHo2nFLO3LFA_saTkf_IS'
+);
+
+var ATELIERS = [
+  {
+    id:'numerique', nom:'Atelier Numérique', icone:'🖨️',
+    couleur:'#185FA5', bg:'#EEF2F8',
+    machinistes: 1,
+    machinistesNoms:['M. Joël'],
+    machines:[
+      {id:'riso9150', nom:'RISO 9150 COMCOLOR',
+       format:'A3', volume:'Grande série (500+)', couleur:true, recto_verso:true,
+       productions:['Livres','Annuaires','Journaux internes','Documents volumineux'],
+       notes:'Idéale pour les grands volumes. Impression rapide couleur.'},
+      {id:'riso7150', nom:'RISO 7150 COMCOLOR',
+       format:'A3', volume:'Grande série (500+)', couleur:true, recto_verso:true,
+       productions:['Livres','Bulletins','Rapports'],
+       notes:'Similaire au RISO 9150. Excellent rapport qualité/volume.'},
+      {id:'km_c1060', nom:'KONICA MINOLTA BIZHUB C1060',
+       format:'A3+', volume:'Moyenne série (100-1000)', couleur:true, recto_verso:true,
+       productions:['Plaquettes','Brochures','Catalogues','Livrets'],
+       notes:'Machine phare. Qualité photo excellente. Idéale pour documents premium.'},
+      {id:'km_c658_1', nom:'KONICA MINOLTA C658 N°1',
+       format:'A3', volume:'Petite à moyenne série (1-500)', couleur:true, recto_verso:true,
+       productions:['Cartes de visite','Flyers','Dépliants','Chemises','Affiches A3','Cartes mariage'],
+       notes:'Machine numérique couleur polyvalente. Recto/verso automatique.'},
+      {id:'km_c658_2', nom:'KONICA MINOLTA C658 N°2',
+       format:'A3', volume:'Petite à moyenne série (1-500)', couleur:true, recto_verso:true,
+       productions:['Cartes de visite','Flyers','Dépliants','Chemises','Affiches A3','Cartes mariage'],
+       notes:'Machine numérique couleur polyvalente. Recto/verso automatique.'},
+      {id:'km_c658_3', nom:'KONICA MINOLTA C658 N°3',
+       format:'A3', volume:'Petite à moyenne série (1-500)', couleur:true, recto_verso:true,
+       productions:['Cartes de visite','Flyers','Dépliants','Chemises','Affiches A3','Cartes mariage'],
+       notes:'Machine numérique couleur polyvalente. Recto/verso automatique.'},
+      {id:'km_c658_4', nom:'KONICA MINOLTA C658 N°4',
+       format:'A3', volume:'Petite à moyenne série (1-500)', couleur:true, recto_verso:true,
+       productions:['Cartes de visite','Flyers','Dépliants','Chemises','Affiches A3','Cartes mariage'],
+       notes:'Machine numérique couleur polyvalente. Recto/verso automatique.'},
+      {id:'km_c658_5', nom:'KONICA MINOLTA C658 N°5',
+       format:'A3', volume:'Petite à moyenne série (1-500)', couleur:true, recto_verso:true,
+       productions:['Cartes de visite','Flyers','Dépliants','Chemises','Affiches A3','Cartes mariage'],
+       notes:'Machine numérique couleur polyvalente. Recto/verso automatique.'},
+      {id:'km_c658_6', nom:'KONICA MINOLTA C658 N°6',
+       format:'A3', volume:'Petite à moyenne série (1-500)', couleur:true, recto_verso:true,
+       productions:['Cartes de visite','Flyers','Dépliants','Chemises','Affiches A3','Cartes mariage'],
+       notes:'Machine numérique couleur polyvalente. Recto/verso automatique.'},
+      {id:'km_c658_7', nom:'KONICA MINOLTA C658 N°7',
+       format:'A3', volume:'Petite à moyenne série (1-500)', couleur:true, recto_verso:true,
+       productions:['Cartes de visite','Flyers','Dépliants','Chemises','Affiches A3','Cartes mariage'],
+       notes:'Machine numérique couleur polyvalente. Recto/verso automatique.'},
+      {id:'epson_sub1', nom:'EPSON Sublimation 1',
+       format:'A4/A3', volume:'Petite à moyenne série', couleur:true, recto_verso:false,
+       productions:['Impression sublimation','Papier transfert','Textile','Mugs','Coussins'],
+       notes:'Impression par sublimation thermique sur papier transfert. Pour textile polyester, mugs, objets.'},
+      {id:'epson_sub2', nom:'EPSON Sublimation 2',
+       format:'A4/A3', volume:'Petite à moyenne série', couleur:true, recto_verso:false,
+       productions:['Impression sublimation','Papier transfert','Textile','Mugs','Coussins'],
+       notes:'Impression par sublimation thermique. Idéale pour objets personnalisés.'},
+      {id:'epson_sub3', nom:'EPSON Sublimation 3',
+       format:'A4/A3', volume:'Petite à moyenne série', couleur:true, recto_verso:false,
+       productions:['Impression sublimation','Papier transfert','Textile'],
+       notes:'Sublimation thermique.'},
+      {id:'epson_sub4', nom:'EPSON Sublimation 4',
+       format:'A4/A3', volume:'Petite à moyenne série', couleur:true, recto_verso:false,
+       productions:['Impression sublimation','Papier transfert'],
+       notes:'Sublimation thermique.'},
+      {id:'epson_sub5', nom:'EPSON Sublimation 5',
+       format:'A4/A3', volume:'Petite à moyenne série', couleur:true, recto_verso:false,
+       productions:['Impression sublimation','Papier transfert'],
+       notes:'Sublimation thermique.'},
+      {id:'etiquettes', nom:'Imprimante Étiquettes',
+       format:'Rouleau', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Étiquettes autocollantes','Codes-barres','Étiquettes produits'],
+       notes:'Spécialisée étiquettes. Formats personnalisables.'},
+      {id:'dore_num', nom:'Imprimante Impression Dorée',
+       format:'A4', volume:'Petite série', couleur:false, recto_verso:false,
+       productions:['Finition dorée','Couvertures premium','Diplômes','Invitations'],
+       notes:'Effet doré métallisé sur documents. Produit haut de gamme.'},
+    ]
+  },
+  {
+    id:'grand_format', nom:'Atelier Grand Format', icone:'🖼️',
+    couleur:'#3B6D11', bg:'#EAF3DE',
+    machinistes: 2,
+    machinistesNoms:['M. Romaric','M. Junior'],
+    machines:[
+      {id:'konica_k3208_1', nom:'KONICA K3208B-C512i N°1',
+       format:'Grand format (jusqu\'à 1.3m)', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Affiches grand format','Bâches','Banderoles','Roll-up','Kakémonos'],
+       notes:'Machine grand format. Pour tout format dépassant A0.'},
+      {id:'konica_k3208_2', nom:'KONICA K3208B-C512i N°2',
+       format:'Grand format (jusqu\'à 1.3m)', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Affiches grand format','Bâches','Banderoles','Roll-up','Kakémonos'],
+       notes:'Machine grand format. Pour tout format dépassant A0.'},
+      {id:'roland_rf640', nom:'ROLAND VERSAEXPRESS RF-640',
+       format:'jusqu\'à 1.6m de large', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Bâches PVC','Vinyle autocollant','Micro-perforé','Banderoles'],
+       notes:'Machine haut de gamme Roland. Qualité photo exceptionnelle sur vinyle.'},
+      {id:'yinghe', nom:'YINGHE',
+       format:'Grand format', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Bâches','Affiches extérieur','Banderoles'],
+       notes:'Machine grand format économique pour grandes quantités.'},
+    ]
+  },
+  {
+    id:'offset', nom:'Atelier Offset', icone:'⚙️',
+    couleur:'#854F0B', bg:'#FAEEDA',
+    machinistes: 3,
+    machinistesNoms:['Titulaire 1','Titulaire 2','Titulaire 3'],
+    machines:[
+      {id:'offset_mo1', nom:'OFFSET M.O N°1',
+       format:'Variable', volume:'Grande série (1000+)', couleur:true, recto_verso:true,
+       productions:['Livres','Journaux','Magazines','Grandes séries'],
+       notes:'Offset traditionnel. Économique pour très grandes séries.'},
+      {id:'offset_mo2', nom:'OFFSET M.O N°2',
+       format:'Variable', volume:'Grande série (1000+)', couleur:true, recto_verso:true,
+       productions:['Livres','Journaux','Magazines','Grandes séries'],
+       notes:'Offset traditionnel. Économique pour très grandes séries.'},
+      {id:'kord1', nom:'OFFSET KORD N°1',
+       format:'B2 (500x700mm)', volume:'Grande série (500+)', couleur:true, recto_verso:true,
+       productions:['Affiches','Calendriers','Catalogues','Livres grand format'],
+       notes:'Format B2. Idéale pour produits marketing haut volume.'},
+      {id:'kord2', nom:'OFFSET KORD N°2',
+       format:'B2 (500x700mm)', volume:'Grande série (500+)', couleur:true, recto_verso:true,
+       productions:['Affiches','Calendriers','Catalogues','Livres grand format'],
+       notes:'Format B2. Idéale pour produits marketing haut volume.'},
+      {id:'kors1', nom:'OFFSET KORS N°1',
+       format:'Variable', volume:'Grande série', couleur:true, recto_verso:true,
+       productions:['Dépliants','Brochures','Imprimés commerciaux'],
+       notes:'Machine offset polyvalente.'},
+      {id:'kors2', nom:'OFFSET KORS N°2',
+       format:'Variable', volume:'Grande série', couleur:true, recto_verso:true,
+       productions:['Dépliants','Brochures','Imprimés commerciaux'],
+       notes:'Machine offset polyvalente.'},
+      {id:'gto52', nom:'OFFSET GTO 52',
+       format:'B3 (360x520mm)', volume:'Moyenne à grande série (300+)', couleur:true, recto_verso:false,
+       productions:['Cartes de visite','Flyers','En-têtes de lettres'],
+       notes:'Format compact. Très précis pour petits formats en grande quantité.'},
+      {id:'cylindre', nom:'CYLINDRE TYPO',
+       format:'Variable', volume:'Variable', couleur:false, recto_verso:false,
+       productions:['Numérotation','Perforation','Découpe spéciale'],
+       notes:'Machine typographique pour finitions spéciales.'},
+      {id:'theimoclean1', nom:'THEIMOCLEAN THEIMER COPYMAT N°1',
+       format:'Variable', volume:'Variable', couleur:false, recto_verso:false,
+       productions:['Préparation plaques offset','Flashage'],
+       notes:'Préparation technique pour impression offset.'},
+      {id:'theimoclean2', nom:'THEIMOCLEAN THEIMER COPYMAT N°2',
+       format:'Variable', volume:'Variable', couleur:false, recto_verso:false,
+       productions:['Préparation plaques offset','Flashage'],
+       notes:'Préparation technique pour impression offset.'},
+    ]
+  },
+  {
+    id:'finition', nom:'Atelier Finition', icone:'✂️',
+    couleur:'#6B2FA0', bg:'#F0E6FA',
+    machinistes: 3,
+    machinistesNoms:['Titulaire 1','Titulaire 2','Titulaire 3'],
+    machines:[
+      {id:'pelliculeuse', nom:'PELLICULEUSE (Mat/Brillant)',
+       format:'Jusqu\'à A2', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Pelliculage mat','Pelliculage brillant','Protection documents'],
+       notes:'Finition indispensable pour couvertures et documents premium.'},
+      {id:'agraphe_cheval', nom:'Machine Agraphe à Cheval Automatique',
+       format:'A4/A5', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Livrets agrafés','Magazines','Programmes'],
+       notes:'Agrafage automatique au centre pour livrets.'},
+      {id:'agrapheuse_elec', nom:'AGRAFEUSE ÉLECTRONIQUE',
+       format:'A4/A3', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Documents agrafés','Rapports','Dossiers'],
+       notes:'Agrafage à plat ou à cheval.'},
+      {id:'thermorelieuse1', nom:'THERMORELIEUSE Dos Carré N°1',
+       format:'Variable', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Reliure dos carré collé','Mémoires','Rapports','Livres'],
+       notes:'Reliure professionnelle pour documents épais.'},
+      {id:'thermorelieuse2', nom:'THERMORELIEUSE Dos Carré N°2',
+       format:'Variable', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Reliure dos carré collé','Mémoires','Rapports','Livres'],
+       notes:'Reliure professionnelle pour documents épais.'},
+      {id:'emballage_auto', nom:'Machine Emballage (Nappe) Automatique',
+       format:'Variable', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Emballage cellophane','Protection commandes','Conditionnement'],
+       notes:'Emballage automatique pour livraisons.'},
+      {id:'perforation_semi', nom:'Machine Perforation Semi-Automatique',
+       format:'A4/A3', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Perforation 2/4 trous','Classeurs','Dossiers perforés'],
+       notes:'Perforation standard pour classeurs.'},
+      {id:'perforation_spirale', nom:'Machine Perforation Reliure Spirale',
+       format:'A4/A5/A3', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Reliure spirale','Cahiers','Bloc-notes','Calendriers'],
+       notes:'Perforation spéciale pour spirale plastique ou métallique.'},
+      {id:'fil', nom:'Machine Emballage à Fil',
+       format:'Variable', volume:'Grande série', couleur:false, recto_verso:false,
+       productions:['Pliage et conditionnement','Journaux','Magazines'],
+       notes:'Pour conditionnement en liasse.'},
+      {id:'impression_dore', nom:'Machine Impression Dorée',
+       format:'A4', volume:'Petite série', couleur:false, recto_verso:false,
+       productions:['Dorure à chaud','Couvertures premium','Diplômes','Cartes VIP'],
+       notes:'Finition luxe. Dorure à chaud sur couvertures et documents prestige.'},
+    ]
+  },
+  {
+    id:'dtg_dtf', nom:'Atelier DTG / DTF', icone:'👕',
+    couleur:'#1A6AA0', bg:'#E8F4FD',
+    machinistes: 1,
+    machinistesNoms:['M. Gloire'],
+    machines:[
+      {id:'audley_dtg', nom:'IMPRIMANTE AUDLEY DTG',
+       format:'Textile (T-shirt, polo...)', volume:'Petite à moyenne série (1-200)', couleur:true, recto_verso:false,
+       productions:['Impression sur T-shirts','Polos','Sweats','Tote bags','Textile coton'],
+       notes:'DTG = Direct To Garment. Impression directe sur tissu. Idéale pour petites séries personnalisées.'},
+      {id:'tunnel_sechage', nom:'TUNNEL DE SÉCHAGE DTG',
+       format:'Textile', volume:'Toute quantité', couleur:false, recto_verso:false,
+       productions:['Fixation encre DTG','Finition textile'],
+       notes:'Machine de fixation obligatoire après impression DTG.'},
+    ]
+  },
+  {
+    id:'flocage', nom:'Atelier Flocage', icone:'🎽',
+    couleur:'#A32D2D', bg:'#FCEBEB',
+    machinistes: 1,
+    machinistesNoms:['Titulaire (à confirmer)'],
+    machines:[
+      {id:'flocage_1', nom:'MACHINE FLOCAGE N°1',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_2', nom:'MACHINE FLOCAGE N°2',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_3', nom:'MACHINE FLOCAGE N°3',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_4', nom:'MACHINE FLOCAGE N°4',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_5', nom:'MACHINE FLOCAGE N°5',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_6', nom:'MACHINE FLOCAGE N°6',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_7', nom:'MACHINE FLOCAGE N°7',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_8', nom:'MACHINE FLOCAGE N°8',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_9', nom:'MACHINE FLOCAGE N°9',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_10', nom:'MACHINE FLOCAGE N°10',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_11', nom:'MACHINE FLOCAGE N°11',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+      {id:'flocage_12', nom:'MACHINE FLOCAGE N°12',
+       format:'Textile', volume:'Toute quantité', couleur:true, recto_verso:false,
+       productions:['Flocage textile','Maillots','Uniformes','Vêtements personnalisés'],
+       notes:'Machine de flocage velours sur textile.'},
+    ]
+  },
+  {
+    id:'broderie', nom:'Atelier Broderie', icone:'🧵',
+    couleur:'#2D7A4F', bg:'#E8F8F0',
+    machinistes: 1,
+    machinistesNoms:['M. J... (à confirmer)'],
+    machines:[
+      {id:'broderie_x1', nom:'MACHINE DE BRODERIE',
+       format:'Textile', volume:'Petite à moyenne série', couleur:true, recto_verso:false,
+       productions:['Broderie logos','Broderie noms','Chemises','Casquettes','Uniformes'],
+       notes:'1 machine. Broderie haute qualité pour uniformes et vêtements professionnels.'},
+    ]
+  },
+];
+
+// Machinistes par atelier
+var MACHINISTES_PAR_ATELIER = {
+  'Atelier Numérique':    ['M. Joël'],
+  'Atelier Grand Format': ['M. Romaric','M. Junior'],
+  'Atelier Offset':       ['Titulaire 1','Titulaire 2','Titulaire 3'],
+  'Atelier Finition':     ['Titulaire 1','Titulaire 2','Titulaire 3'],
+  'Atelier DTG / DTF':    ['M. Gloire'],
+  'Atelier Flocage':      ['Titulaire (à confirmer)'],
+  'Atelier Broderie':     ['M. J... (à confirmer)']
+};
+
+// État global
+var G_ROLE = 'lecture';
+var G_DOSSIERS = [];      // depuis table dossiers (Supabase)
+var G_AFFECTATIONS = [];  // depuis table affectations_production
+var G_MACHINISTES = [];   // depuis table machinistes
+var G_DISPOS = [];        // depuis table disponibilites_machinistes
+var G_ETATS = {};         // états machines manuels {machine_id: {statut,...}}
+var G_ATELIERS_DB = [];   // ateliers ajoutés dynamiquement
+var G_MACHINES_DB = [];   // machines ajoutées dynamiquement
+
+var MOTS_DE_PASSE = {
+  'MarleneGP26':'admin','DirectionGP26':'contributeur',
+  'ComptaGP26':'comptable','ProductionGP26':'production'
+};
+
+// ── AUTH ──────────────────────────────────────────────
+function ouvrirLogin(){ document.getElementById('ovLogin').classList.add('open'); }
+function fermer(id){ document.getElementById(id).classList.remove('open'); }
+
+function validerLogin(){
+  var pwd = document.getElementById('pwdIn').value;
+  var role = MOTS_DE_PASSE[pwd];
+  if(role){
+    G_ROLE = role;
+    var labels = {admin:'Administrateur',production:'Production',contributeur:'Commercial',comptable:'Comptable'};
+    document.getElementById('modeBadge').style.display='inline-block';
+    document.getElementById('modeBadge').textContent = labels[role]||role;
+    document.getElementById('btnCo').style.display='none';
+    document.getElementById('btnDeco').style.display='inline-block';
+    document.getElementById('btnAddMach').style.display='block';
+    document.getElementById('loginErr').style.display='none';
+    fermer('ovLogin');
+    charger();
+  } else {
+    document.getElementById('loginErr').style.display='block';
+  }
+}
+
+function deconnecter(){
+  G_ROLE='lecture';
+  document.getElementById('modeBadge').style.display='none';
+  document.getElementById('btnCo').style.display='inline-block';
+  document.getElementById('btnDeco').style.display='none';
+  document.getElementById('btnAddMach').style.display='none';
+  renderAll();
+}
+
+// ── NAVIGATION ────────────────────────────────────────
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='dashboard') renderDashboard();
+  if(name==='dossiers') renderDossiers();
+  if(name==='machines') renderMachines();
+  if(name==='machinistes') renderMachinistes();
+  if(name==='planning') renderPlanning();
+  if(name==='livraisons') renderLivraisons();
+}
+
+// ── CHARGEMENT ────────────────────────────────────────
+async function charger(){
+  try{
+    // Dossiers de production : proforma (etape=3) non encore livrés
+    // Etape 4+ = facturé/recouvrement = déjà livré → exclure sauf si en production active
+    var r1 = await SB.from('dossiers').select('*')
+      .in('etape',[3,4,5])
+      .order('cree_le',{ascending:false});
+    if(!r1.error) G_DOSSIERS = r1.data||[];
+
+    // Affectations production
+    var r2 = await SB.from('affectations_production').select('*');
+    if(!r2.error) G_AFFECTATIONS = r2.data||[];
+
+    // Machinistes
+    var r3 = await SB.from('machinistes').select('*').order('atelier');
+    if(!r3.error) G_MACHINISTES = r3.data||[];
+
+    // Disponibilités machinistes
+    var r4 = await SB.from('disponibilites_machinistes').select('*');
+    if(!r4.error) G_DISPOS = r4.data||[];
+
+    // États machines manuels
+    var r5 = await SB.from('etats_machines').select('*');
+    if(!r5.error){
+      G_ETATS={};
+      (r5.data||[]).forEach(function(e){G_ETATS[e.machine_id]=e;});
+    }
+    // Ateliers et machines dynamiques
+    var r6 = await SB.from('ateliers_db').select('*').order('nom');
+    if(!r6.error) G_ATELIERS_DB = r6.data||[];
+    var r7 = await SB.from('machines_db').select('*').order('atelier_id');
+    if(!r7.error) G_MACHINES_DB = r7.data||[];
+  }catch(e){console.error('Erreur chargement:',e);}
+  remplirFiltres();
+  renderAll();
+}
+
+function renderAll(){
+  renderDashboard();
+  var tabActive = document.querySelector('.tab-content.active');
+  if(tabActive){
+    var id = tabActive.id.replace('tab-','');
+    if(id==='dossiers') renderDossiers();
+    if(id==='machines') renderMachines();
+    if(id==='machinistes') renderMachinistes();
+    if(id==='planning') renderPlanning();
+  }
+}
+
+function remplirFiltres(){
+  // Filtre atelier dans dossiers
+  var selD = document.getElementById('filAtelier');
+  var selP = document.getElementById('planAtelier');
+  var options = '<option value="">Tous ateliers</option>'
+    + ATELIERS.map(function(a){return '<option value="'+a.nom+'">'+a.icone+' '+a.nom+'</option>';}).join('');
+  if(selD) selD.innerHTML = options;
+  if(selP) selP.innerHTML = options;
+
+  // Planning semaines
+  var selSem = document.getElementById('planSemaine');
+  if(selSem){
+    var opts = '';
+    var today = new Date();
+    for(var w=-1; w<=4; w++){
+      var d = new Date(today);
+      d.setDate(today.getDate() - today.getDay() + 1 + w*7);
+      var label = w===0 ? 'Cette semaine' : w===-1 ? 'Semaine passée' : 'Semaine +'+(w);
+      opts += '<option value="'+d.toISOString().substring(0,10)+'">'+label+' ('+d.toLocaleDateString('fr-FR')+')</option>';
+    }
+    selSem.innerHTML = opts;
+  }
+}
+
+// ── HELPERS ───────────────────────────────────────────
+var today = function(){ return new Date().toISOString().substring(0,10); };
+
+function getAffectationsMachine(machineId, date){
+  var d = date || today();
+  return G_AFFECTATIONS.filter(function(a){
+    return a.machine_id===machineId && a.statut!=='termine'
+      && a.date_debut<=d && a.date_fin>=d;
+  });
+}
+
+function statutMachine(machineId){
+  var manuel = G_ETATS[machineId]||{};
+  if(manuel.statut==='panne') return {statut:'panne', note:manuel.note, retour:manuel.date_retour};
+  if(manuel.statut==='maintenance') return {statut:'maintenance', note:manuel.note};
+  var affectes = getAffectationsMachine(machineId);
+  if(affectes.length>0) return {statut:'occupe', affectation:affectes[0]};
+  return {statut:'dispo'};
+}
+
+function statutMachiniste(nom, date){
+  var d = date || today();
+  var dispo = G_DISPOS.find(function(x){return x.machiniste===nom && x.date===d;});
+  if(dispo) return dispo.statut;
+  // Vérifier dans affectations — le champ machiniste peut contenir plusieurs noms séparés par virgule
+  var affecte = G_AFFECTATIONS.find(function(a){
+    if(a.statut==='termine') return false;
+    if(!a.date_debut || !a.date_fin || a.date_debut>d || a.date_fin<d) return false;
+    var noms=(a.machiniste||'').split(',').map(function(n){return n.trim();});
+    return noms.indexOf(nom)>-1;
+  });
+  if(affecte) return 'occupe';
+  // Vérifier aussi dans les dossiers directement
+  var dosOccupe = G_DOSSIERS.find(function(dos){
+    if(dos.statut_production!=='en_production') return false;
+    if(!dos.date_lancement || !dos.date_fin_production) return false;
+    if(dos.date_lancement>d || dos.date_fin_production<d) return false;
+    var noms=(dos.machiniste_assigne||'').split(',').map(function(n){return n.trim();});
+    return noms.indexOf(nom)>-1;
+  });
+  if(dosOccupe) return 'occupe';
+  return 'present';
+}
+
+function badgeStatutMachine(s){
+  var map={
+    dispo:'<span class="statut s-dispo"><span class="dot"></span>Disponible</span>',
+    occupe:'<span class="statut s-prod"><span class="dot"></span>En production</span>',
+    panne:'<span class="statut s-panne"><span class="dot"></span>En panne</span>',
+    maintenance:'<span class="statut s-warn"><span class="dot"></span>Maintenance</span>'
+  };
+  return map[s.statut]||map.dispo;
+}
+
+function statutProdAuto(d){
+  // Logique métier :
+  // - etape 4 ou 5 (facturé/recouvrement/soldé) = travail livré
+  // - SAUF si statut_production est explicitement défini autrement
+  if(d.etape>=4){
+    if(d.statut_production && d.statut_production!=='non_lance') return d.statut_production;
+    return 'livre'; // présumé livré car en recouvrement
+  }
+  // etape 3 = proforma → statut production réel
+  return d.statut_production||'non_lance';
+}
+
+function badgeStatutProd(statut){
+  var map={
+    non_lance:'<span class="statut s-attente"><span class="dot"></span>En attente lancement</span>',
+    en_production:'<span class="statut s-prod"><span class="dot"></span>En production</span>',
+    prod_termine:'<span class="statut s-ok"><span class="dot"></span>Production terminée</span>',
+    pret_livrer:'<span class="statut s-livrer"><span class="dot"></span>Prêt à livrer</span>',
+    livre:'<span class="statut s-livre"><span class="dot"></span>Livré ✓</span>'
+  };
+  return map[statut]||map.non_lance;
+}
+
+function fmt(n){
+  return new Intl.NumberFormat('fr-FR').format(Math.round(n||0))
+    +'<sup style="font-size:60%;font-weight:600;vertical-align:super;margin-left:2px">FCFA</sup>';
+}
+
+function getAllAteliers(){
+  // Fusionner ateliers statiques + ateliers DB
+  var tous = ATELIERS.slice();
+  G_ATELIERS_DB.forEach(function(a){
+    // Matcher par id OU par nom normalisé OU par db_id
+    var nomNorm = function(n){ return (n||'').toLowerCase().replace(/\s+/g,''); };
+    var existe = tous.find(function(x){
+      return x.id===a.id || x.db_id===a.id || x.nom===a.nom
+          || nomNorm(x.nom)===nomNorm(a.nom);
+    });
+    if(!existe){
+      tous.push({
+        id: a.id,
+        nom: a.nom,
+        icone: a.icone||'🏭',
+        couleur: a.couleur||'#6B6B6B',
+        bg: a.bg||'#F0F0F0',
+        machinistes: 0,
+        machinistesNoms: [],
+        machines: G_MACHINES_DB.filter(function(m){return m.atelier_id===a.id;}).map(function(m){
+          return {
+            id: m.id,
+            nom: m.nom,
+            format: m.format||'Variable',
+            volume: m.volume||'Variable',
+            couleur: true,
+            recto_verso: false,
+            productions: m.productions?m.productions.split(','):[],
+            notes: m.notes||''
+          };
+        })
+      });
+    } else {
+      // Ajouter les machines DB à l'atelier statique existant
+      var machinesDB = G_MACHINES_DB.filter(function(m){return m.atelier_id===a.id;});
+      machinesDB.forEach(function(m){
+        var machExiste = existe.machines.find(function(x){return x.id===m.id||x.nom===m.nom;});
+        if(!machExiste){
+          existe.machines.push({
+            id: m.id, nom: m.nom,
+            format: m.format||'Variable', volume: m.volume||'Variable',
+            couleur: true, recto_verso: false,
+            productions: m.productions?m.productions.split(','):[],
+            notes: m.notes||''
+          });
+        }
+      });
+    }
+  });
+  return tous;
+}
+
+function getMachinistesAtelier(atelierNom){
+  var base = MACHINISTES_PAR_ATELIER[atelierNom]||[];
+  var db = G_MACHINISTES.filter(function(m){return m.atelier===atelierNom;}).map(function(m){return m.nom;});
+  var tous = base.slice();
+  db.forEach(function(n){if(tous.indexOf(n)===-1) tous.push(n);});
+  return tous;
+}
+
+function tousLesMachinistes(){
+  var tous = [];
+  Object.values(MACHINISTES_PAR_ATELIER).forEach(function(arr){
+    arr.forEach(function(n){if(tous.indexOf(n)===-1) tous.push(n);});
+  });
+  G_MACHINISTES.forEach(function(m){if(tous.indexOf(m.nom)===-1) tous.push(m.nom);});
+  return tous;
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+function renderDashboard(){
+  var el = document.getElementById('tab-dashboard');
+  if(!el) return;
+
+  var td = today();
+  var totalMachines=0, nbDispo=0, nbOccupees=0, nbPannes=0;
+  getAllAteliers().forEach(function(a){
+    a.machines.forEach(function(m){
+      totalMachines++;
+      var s=statutMachine(m.id);
+      if(s.statut==='panne') nbPannes++;
+      else if(s.statut==='occupe'||s.statut==='maintenance') nbOccupees++;
+      else nbDispo++;
+    });
+  });
+
+  var enProd = G_DOSSIERS.filter(function(d){return d.statut_production==='en_production';}).length;
+  var nonLances = G_DOSSIERS.filter(function(d){
+    var sp = statutProdAuto(d);
+    // En attente = proforma (etape 3) non encore lancé
+    return d.etape===3 && (!d.statut_production||d.statut_production==='non_lance');
+  }).length;
+  var pretLivrer = G_DOSSIERS.filter(function(d){return d.statut_production==='pret_livrer';}).length;
+
+  var html='';
+
+  // KPI
+  html+='<div class="kpi-grid" style="grid-template-columns:repeat(5,1fr)">'
+    +'<div class="kpi"><div class="kpi-l">Machines dispo</div><div class="kpi-v grn">'+nbDispo+'</div></div>'
+    +'<div class="kpi"><div class="kpi-l">En production</div><div class="kpi-v ora">'+nbOccupees+'</div></div>'
+    +'<div class="kpi"><div class="kpi-l">En panne</div><div class="kpi-v red">'+nbPannes+'</div></div>'
+    +'<div class="kpi" style="border-top-color:var(--orange)"><div class="kpi-l">En production</div><div class="kpi-v ora">'+enProd+'</div></div>'
+    +'<div class="kpi" style="border-top-color:var(--bleu)"><div class="kpi-l">Prêts à livrer</div><div class="kpi-v blu">'+pretLivrer+'</div></div>'
+    +'</div>';
+
+  // Alertes
+  if(nonLances>0){
+    html+='<div class="alert-box alert-warn">⏳ <strong>'+nonLances+' dossier(s)</strong> en attente de lancement — à affecter aux machines</div>';
+  }
+  var urgents = G_DOSSIERS.filter(function(d){
+    return d.statut_production==='en_production' && d.date_fin_production && d.date_fin_production<=td;
+  });
+  if(urgents.length>0){
+    html+='<div class="alert-box alert-err">🔴 <strong>'+urgents.length+' production(s)</strong> dont la date de fin est dépassée</div>';
+  }
+
+  // Dossiers en production — vue rapide
+  var enProdList = G_DOSSIERS.filter(function(d){return d.statut_production==='en_production';});
+  if(enProdList.length){
+    html+='<div class="section-title" style="margin-top:20px">En production actuellement</div>';
+    html+='<div class="table-wrap"><table class="dtable">'
+      +'<thead><tr><td>Dossier</td><td>Client</td><td>Atelier</td><td>Machine</td>'
+      +'<td>Machiniste</td><td>Fin prévue</td><td>Actions</td></tr></thead><tbody>';
+    enProdList.forEach(function(d){
+      var retard = d.date_fin_production && d.date_fin_production < td;
+      html+='<tr style="'+(retard?'background:#FDEDEC':'')+'">'
+        +'<td><strong>'+( d.num||'—')+'</strong></td>'
+        +'<td>'+d.client+'</td>'
+        +'<td style="font-size:11px">'+( d.atelier_production||'—')+'</td>'
+        +'<td style="font-size:11px">'
+        +(d.machine_assignee?d.machine_assignee.split(',').length+' machine(s)':'—')
+        +'</td>'
+        +'<td style="font-size:11px">'+(d.machiniste_assigne||'—')+'</td>'
+        +'<td style="font-weight:700;color:'+(retard?'var(--rouge)':'var(--bleu)')+'">'+( d.date_fin_production||'—')+'</td>'
+        +(d.machine_assignee&&d.machine_assignee.trim()!==''
+          ?'<td><button class="btn btn-sm btn-g" onclick="terminerProduction(\\\''+d.id+'\\\')">✅ Terminer</button>'
+          +' <button class="btn btn-sm" onclick="ouvrirProd(\\\''+d.id+'\\\')">✏️</button></td>'
+          :'<td><span style="font-size:10px;color:var(--orange)">⚠️ Machine non affectée</span>'
+          +' <button class="btn btn-sm" onclick="ouvrirProd(\\\''+d.id+'\\\')">✏️</button></td>')
+        +'</tr>';
+    });
+    html+='</tbody></table></div>';
+  }
+
+  // Machinistes présents aujourd'hui
+  html+='<div class="section-title" style="margin-top:20px">Présence machinistes — aujourd\'hui</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">';
+  tousLesMachinistes().forEach(function(nom){
+    var s = statutMachiniste(nom);
+    var badge = s==='absent'?'<span class="statut s-panne"><span class="dot"></span>Absent</span>'
+              : s==='occupe'?'<span class="statut s-prod"><span class="dot"></span>En production</span>'
+              : s==='conge'?'<span class="statut s-occupe"><span class="dot"></span>Congé</span>'
+              : '<span class="statut s-dispo"><span class="dot"></span>Disponible</span>';
+    html+='<div style="background:var(--blanc);border:1px solid var(--gris-l);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center">'
+      +'<strong style="font-size:12px">'+nom+'</strong>'+badge+'</div>';
+  });
+  html+='</div>';
+
+  el.innerHTML=html;
+}
+
+// ── DOSSIERS PRODUCTION ───────────────────────────────
+function renderDossiers(){
+  var el=document.getElementById('dossiers-list');
+  if(!el) return;
+  var q=(document.getElementById('srchDos')||{value:''}).value.toLowerCase();
+  var fSt=(document.getElementById('filStatut')||{value:''}).value;
+  var fAt=(document.getElementById('filAtelier')||{value:''}).value;
+  var canEdit=(G_ROLE==='admin'||G_ROLE==='production'||G_ROLE==='contributeur');
+
+  // Filtrer : exclure les dossiers présumés livrés (etape>=4 sans statut prod défini)
+  var list=G_DOSSIERS.filter(function(d){
+    var sp=statutProdAuto(d);
+    // Exclure les "livrés automatiques" sauf si filtre explicite
+    if(sp==='livre' && d.etape>=4 && (!d.statut_production||d.statut_production==='non_lance')) return false;
+    var matchQ=!q||(d.client||'').toLowerCase().includes(q)||(d.num||'').toLowerCase().includes(q);
+    var matchS=!fSt||sp===fSt;
+    var matchA=!fAt||(d.atelier_production||'')===fAt;
+    return matchQ&&matchS&&matchA;
+  });
+
+  // Grouper par statut pour vue Kanban
+  var groupes = {
+    non_lance:    {label:'⏳ En attente de lancement', color:'var(--orange)', bg:'#FEF9E7', items:[]},
+    en_production:{label:'🔧 En production',           color:'#185FA5',       bg:'#EEF2F8', items:[]},
+    prod_termine: {label:'✅ Production terminée',     color:'var(--vert)',    bg:'#E8F8F0', items:[]},
+    pret_livrer:  {label:'📦 Prêt à livrer',           color:'#6B2FA0',       bg:'#F0E6FA', items:[]},
+    livre:        {label:'🚚 Livré',                    color:'var(--gris)',   bg:'var(--fond)', items:[]}
+  };
+
+  list.forEach(function(d){
+    var sp=statutProdAuto(d);
+    if(groupes[sp]) groupes[sp].items.push(d);
+    else groupes.non_lance.items.push(d);
+  });
+
+  if(!list.length){
+    el.innerHTML='<div class="empty">Aucun dossier en production actif.</div>';
+    return;
+  }
+
+  var html='';
+  Object.keys(groupes).forEach(function(key){
+    var g=groupes[key];
+    if(!g.items.length && fSt && fSt!==key) return; // masquer groupes vides si filtre actif
+    if(!g.items.length) return; // masquer groupes vides
+
+    html+='<div style="margin-bottom:24px">';
+    // En-tête groupe
+    html+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;'
+         +'background:'+g.bg+';border-radius:10px 10px 0 0;border:1px solid var(--gris-l);border-bottom:none">'
+         +'<span style="font-size:13px;font-weight:800;color:'+g.color+'">'+g.label+'</span>'
+         +'<span style="background:'+g.color+';color:#fff;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700">'+g.items.length+'</span>'
+         +'</div>';
+
+    // Tableau
+    html+='<div style="background:var(--blanc);border:1px solid var(--gris-l);border-radius:0 0 10px 10px;overflow:hidden">';
+    html+='<table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html+='<thead><tr style="background:var(--fond)">'
+         +'<td style="padding:8px 14px;font-weight:700;color:var(--gris);font-size:10px;text-transform:uppercase">N° Dossier</td>'
+         +'<td style="padding:8px 14px;font-weight:700;color:var(--gris);font-size:10px;text-transform:uppercase">Client</td>'
+         +'<td style="padding:8px 14px;font-weight:700;color:var(--gris);font-size:10px;text-transform:uppercase">Prestation</td>'
+         +'<td style="padding:8px 14px;font-weight:700;color:var(--gris);font-size:10px;text-transform:uppercase">BAT</td>'
+         +'<td style="padding:8px 14px;font-weight:700;color:var(--gris);font-size:10px;text-transform:uppercase">Atelier</td>'
+         +'<td style="padding:8px 14px;font-weight:700;color:var(--gris);font-size:10px;text-transform:uppercase">Lancement</td>'
+         +'<td style="padding:8px 14px;font-weight:700;color:var(--gris);font-size:10px;text-transform:uppercase">Livraison prévue</td>'
+         +(canEdit?'<td style="padding:8px 14px;font-weight:700;color:var(--gris);font-size:10px;text-transform:uppercase">Actions</td>':'')
+         +'</tr></thead><tbody>';
+
+    g.items.forEach(function(d){
+      var sp=statutProdAuto(d);
+      var batBadge = d.bat_statut==='valide'
+        ? '<span style="color:var(--vert);font-weight:700;font-size:11px">✅ Validé</span>'
+        : d.bat_statut==='soumis'
+        ? '<span style="color:var(--orange);font-weight:700;font-size:11px">📤 En attente</span>'
+        : d.bat_statut==='refuse'
+        ? '<span style="color:var(--rouge);font-weight:700;font-size:11px">❌ Refusé</span>'
+        : '<span style="color:var(--gris);font-size:11px">⏳ Non soumis</span>';
+
+      var retard = d.date_livraison_prevue && d.date_livraison_prevue < today();
+
+      html+='<tr style="border-bottom:1px solid var(--gris-l);'+(retard&&sp==='en_production'?'background:#FFF8F0':'')+'">'+
+        '<td style="padding:10px 14px"><strong style="color:var(--noir)">'+( d.num||'—')+'</strong></td>'+
+        '<td style="padding:10px 14px;font-weight:600">'+d.client+'</td>'+
+        '<td style="padding:10px 14px;font-size:11px;color:var(--gris);max-width:180px;overflow:hidden;text-overflow:ellipsis">'+( d.objet||'—')+'</td>'+
+        '<td style="padding:10px 14px">'+batBadge+'</td>'+
+        '<td style="padding:10px 14px;font-size:11px">'+( d.atelier_production||'—')+'</td>'+
+        '<td style="padding:10px 14px;font-size:11px">'+( d.date_lancement||'—')+'</td>'+
+        '<td style="padding:10px 14px;font-size:11px;font-weight:700;color:'+(retard?'var(--rouge)':'var(--bleu)')+'">'+( d.date_livraison_prevue||'—')+(retard?' ⚠️':'')+'</td>';
+
+      if(canEdit){
+        html+='<td style="padding:10px 14px;white-space:nowrap">';
+        if(sp==='non_lance'){
+          html+='<button class="btn btn-p btn-sm" onclick="ouvrirProd(\''+d.id+'\')">🚀 Lancer</button>';
+        } else if(sp==='en_production'){
+          var aMachine = d.machine_assignee && d.machine_assignee.trim()!=='';
+          if(aMachine){
+            html+='<button class="btn btn-g btn-sm" onclick="terminerProduction(\''+d.id+'\')">✅ Terminer</button> ';
+          } else {
+            html+='<span style="font-size:10px;color:var(--orange)">⚠️ Sans machine</span> ';
+          }
+          html+='<button class="btn btn-sm" onclick="ouvrirProd(\''+d.id+'\')">✏️</button>';
+        } else if(sp==='prod_termine'){
+          html+='<button class="btn btn-p btn-sm" onclick="marquerPretLivrer(\''+d.id+'\')">📦 Prêt livrer</button>';
+        } else if(sp==='pret_livrer'){
+          html+='<button class="btn btn-g btn-sm" onclick="marquerLivre(\''+d.id+'\')">🚚 Livré</button>';
+        } else {
+          html+='<button class="btn btn-sm" onclick="ouvrirProd(\''+d.id+'\')">✏️</button>';
+        }
+        html+='</td>';
+      }
+      html+='</tr>';
+    });
+    html+='</tbody></table></div></div>';
+  });
+
+  el.innerHTML=html;
+}
+
+
+// ── FORMULAIRE AFFECTATION PRODUCTION ─────────────────
+var G_PROD_ID=null;
+
+function ouvrirProd(dossierId){
+  G_PROD_ID=dossierId;
+  var d=G_DOSSIERS.find(function(x){return x.id===dossierId;})||{};
+  var sp=d.statut_production||'non_lance';
+  var machinesAssignees=d.machines_assignees?d.machines_assignees.split(',').map(function(s){return s.trim();}).filter(Boolean):[];
+  var machinistesAssignes=d.machinistes_assignes?d.machinistes_assignes.split(',').map(function(s){return s.trim();}).filter(Boolean):[];
+
+  // Options ateliers
+  var atOpts=getAllAteliers().map(function(a){
+    return '<option value="'+a.nom+'"'+(d.atelier_production===a.nom?' selected':'')+'>'+a.icone+' '+a.nom+'</option>';
+  }).join('');
+
+  // Options machines de l'atelier
+  var atelierCourant=ATELIERS.find(function(a){return a.nom===d.atelier_production;})||ATELIERS[0];
+  var machOpts=getMachineOptions(atelierCourant, d.machine_assignee);
+
+  // Options machinistes
+  var machNoms=d.atelier_production?getMachinistesAtelier(d.atelier_production):tousLesMachinistes();
+  var machNomOpts='<option value="">— Non assigné —</option>'
+    +machNoms.map(function(n){
+      var s=statutMachiniste(n);
+      var ico=s==='absent'?'❌ ':s==='conge'?'🏖️ ':'✅ ';
+      return '<option value="'+n+'"'+(d.machiniste_assigne===n?' selected':'')+'>'+ico+n+'</option>';
+    }).join('');
+
+  document.getElementById('modProd').innerHTML=
+    '<h3>'+(sp==='non_lance'?'🚀 Lancer la production':'✏️ Modifier l\'affectation')+'</h3>'
+    +'<div class="modal-sub">'+d.client+' — '+(d.num||'')+(d.objet?' — '+d.objet:'')+'</div>'
+
+    +'<div class="fr">'
+    +'<label>Ateliers concernés <span style="font-size:10px;color:var(--gris);font-weight:400">(cochez tous les ateliers impliqués)</span></label>'
+    +'<div id="pAteliersCheck" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;border:1px solid var(--gris-l);border-radius:8px;padding:10px">'
+    +getAteliersCheckboxes(d.ateliers_assignes||d.atelier_production||'')+'</div></div>'
+
+    +'<div class="fr">'
+    +'<label>Machines utilisées <span style="font-size:10px;color:var(--gris);font-weight:400">(cochez toutes les machines concernées)</span></label>'
+    +'<div id="pMachinesCheck" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;max-height:200px;overflow-y:auto;border:1px solid var(--gris-l);border-radius:8px;padding:10px">'
+    +getMachinesCheckboxes(atelierCourant, machinesAssignees)+'</div></div>'
+
+    +'<div class="fr">'
+    +'<label>Machinistes assignés <span style="font-size:10px;color:var(--gris);font-weight:400">(cochez les machinistes concernés)</span></label>'
+    +'<div id="pMachinistesCheck" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;border:1px solid var(--gris-l);border-radius:8px;padding:10px">'
+    +getMachinistesCheckboxes(atelierCourant?atelierCourant.nom:'', machinistesAssignes)+'</div></div>'
+
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Date souhaitée par client</label>'
+    +'<input type="date" id="pDateSouhaitee" value="'+(d.date_livraison_souhaitee||'')+'">'
+    +'</div>'
+    +'<div class="fr"><label>Date lancement réelle</label>'
+    +'<input type="date" id="pDebut" value="'+(d.date_lancement||today())+'"></div>'
+    +'</div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Date fin de production prévue</label>'
+    +'<input type="date" id="pFin" value="'+(d.date_fin_production||'')+'"></div>'
+    +'<div class="fr"><label>Date livraison prévue</label>'
+    +'<input type="date" id="pDateLivraison" value="'+(d.date_livraison_prevue||'')+'"></div>'
+    +'</div>'
+
+    +'<div class="fr"><label>Statut production</label>'
+    +'<select id="pStatut">'
+    +'<option value="non_lance"'+(sp==='non_lance'?' selected':'')+'>⏳ En attente lancement</option>'
+    +'<option value="en_production"'+(sp==='en_production'?' selected':'')+'>🔧 En production</option>'
+    +'<option value="prod_termine"'+(sp==='prod_termine'?' selected':'')+'>✅ Production terminée</option>'
+    +'<option value="pret_livrer"'+(sp==='pret_livrer'?' selected':'')+'>📦 Prêt à livrer</option>'
+    +'<option value="livre"'+(sp==='livre'?' selected':'')+'>🚚 Livré</option>'
+    +'</select></div>'
+
+    +'<div style="background:var(--or-bg);border:1px solid var(--or);border-radius:8px;padding:14px;margin-bottom:12px">'
+    +'<div style="font-size:11px;font-weight:800;color:var(--noir);margin-bottom:10px">📄 BON À TIRER (BAT)</div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Statut BAT</label>'
+    +'<select id="pBatStatut">'
+    +'<option value="non_soumis"'+(d.bat_statut==='non_soumis'||!d.bat_statut?' selected':'')+'>⏳ Non soumis au client</option>'
+    +'<option value="soumis"'+(d.bat_statut==='soumis'?' selected':'')+'>📤 Soumis — en attente validation</option>'
+    +'<option value="valide"'+(d.bat_statut==='valide'?' selected':'')+'>✅ Validé par le client</option>'
+    +'<option value="refuse"'+(d.bat_statut==='refuse'?' selected':'')+'>❌ Refusé — correction en cours</option>'
+    +'</select></div>'
+    +'<div class="fr"><label>Date validation BAT</label>'
+    +'<input type="date" id="pBatDate" value="'+(d.bat_date_validation||'')+'">'
+    +'</div></div>'
+    +'<div class="fr"><label>Référence / Notes BAT</label>'
+    +'<input id="pBatRef" value="'+(d.bat_ref||'')+'" placeholder="Ex: BAT_CLIENT_v2.pdf — corrections demandées...">'
+    +'</div></div>'
+    +'<div class="fr"><label>Notes production</label>'
+    +'<textarea id="pNotes" rows="2">'+(d.notes_production||'')+'</textarea></div>'
+
+    +'<div class="fa">'
+    +'<button class="btn" onclick="fermer(\'ovProd\')">Annuler</button>'
+    +'<button class="btn btn-p" onclick="sauverProd()">Enregistrer</button>'
+    +'</div>';
+
+  document.getElementById('ovProd').classList.add('open');
+}
+
+function getAteliersCheckboxes(selected){
+  var sel = selected ? selected.split(',').map(function(s){return s.trim();}) : [];
+  return getAllAteliers().map(function(a){
+    var checked = sel.indexOf(a.nom)>-1 ? 'checked' : '';
+    return '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;padding:3px 0">'      +'<input type="checkbox" name="pAtelier" value="'+a.nom+'" '+checked+' onchange="rechargerCheckboxesMulti()">'      +a.icone+' '+a.nom+'</label>';
+  }).join('');
+}
+
+function rechargerCheckboxesMulti(){
+  var ateliersCoches = Array.from(document.querySelectorAll('input[name="pAtelier"]:checked'))
+    .map(function(cb){return cb.value;});
+  // Recharger machines et machinistes pour tous les ateliers cochés
+  var machDiv = document.getElementById('pMachinesCheck');
+  var machNomDiv = document.getElementById('pMachinistesCheck');
+  if(!machDiv || !machNomDiv) return;
+  var machHtml = '';
+  var machNomHtml = '';
+  var machsDeja = [];
+  var nomsDeja = [];
+  ateliersCoches.forEach(function(atelierNom){
+    var atelier = getAllAteliers().find(function(a){return a.nom===atelierNom;});
+    if(atelier){
+      machHtml += '<div style="font-size:10px;font-weight:800;color:'+atelier.couleur
+        +';text-transform:uppercase;letter-spacing:0.5px;margin:6px 0 3px">'+atelier.icone+' '+atelier.nom+'</div>';
+      atelier.machines.forEach(function(m){
+        if(machsDeja.indexOf(m.id)===-1){
+          machsDeja.push(m.id);
+          var s = statutMachine(m.id);
+          var dispo = s.statut==='dispo' ? '✅' : s.statut==='occupe' ? '🟡' : '🔴';
+          machHtml += '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;padding:2px 0">'            +'<input type="checkbox" name="pMachine" value="'+m.nom+'" data-id="'+m.id+'">'            +dispo+' '+m.nom+'</label>';
+        }
+      });
+      getMachinistesAtelier(atelierNom).forEach(function(nom){
+        if(nomsDeja.indexOf(nom)===-1){
+          nomsDeja.push(nom);
+          var s = statutMachiniste(nom);
+          var ico = s==='absent' ? '❌' : s==='conge' ? '🏖️' : '✅';
+          machNomHtml += '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;padding:2px 0">'            +'<input type="checkbox" name="pMachiniste" value="'+nom+'">'            +ico+' '+nom+'</label>';
+        }
+      });
+    }
+  });
+  machDiv.innerHTML = machHtml || '<span style="font-size:11px;color:var(--gris)">Cochez un atelier pour voir les machines</span>';
+  machNomDiv.innerHTML = machNomHtml || '<span style="font-size:11px;color:var(--gris)">Cochez un atelier pour voir les machinistes</span>';
+}
+
+function getMachinesCheckboxes(atelier, selected){
+  if(!atelier) return '<span style="color:var(--gris);font-size:11px">Sélectionnez un atelier</span>';
+  var sel = Array.isArray(selected) ? selected : (selected ? selected.split(',') : []);
+  return atelier.machines.map(function(m){
+    var s = statutMachine(m.id);
+    var dispo = s.statut==='dispo' ? '✅' : s.statut==='occupe' ? '🟡' : '🔴';
+    var checked = sel.indexOf(m.nom)>-1 ? 'checked' : '';
+    var disabled = s.statut==='panne' ? 'disabled' : '';
+    return '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;padding:3px 0">'      +'<input type="checkbox" name="pMachine" value="'+m.nom+'" data-id="'+m.id+'" '+checked+' '+disabled+'>'      +dispo+' '+m.nom+'</label>';
+  }).join('');
+}
+
+function getMachinistesCheckboxes(atelierNom, selected){
+  var noms = atelierNom ? getMachinistesAtelier(atelierNom) : tousLesMachinistes();
+  var sel = Array.isArray(selected) ? selected : (selected ? selected.split(',') : []);
+  return noms.map(function(nom){
+    var s = statutMachiniste(nom);
+    var ico = s==='absent' ? '❌' : s==='conge' ? '🏖️' : '✅';
+    var checked = sel.indexOf(nom)>-1 ? 'checked' : '';
+    return '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;padding:3px 0">'      +'<input type="checkbox" name="pMachiniste" value="'+nom+'" '+checked+'>'      +ico+' '+nom+'</label>';
+  }).join('');
+}
+
+function rechargerCheckboxesProd(sel){
+  rechargerCheckboxesMulti();
+}
+function rechargerCheckboxesProdOLD(sel){
+  var atelierNom = sel.value;
+  var atelier = ATELIERS.find(function(a){return a.nom===atelierNom;})||ATELIERS[0];
+  var machDiv = document.getElementById('pMachinesCheck');
+  if(machDiv) machDiv.innerHTML = getMachinesCheckboxes(atelier, []);
+  var machNomDiv = document.getElementById('pMachinistesCheck');
+  if(machNomDiv) machNomDiv.innerHTML = getMachinistesCheckboxes(atelierNom, []);
+}
+
+function getMachineOptions(atelier, machineSelectionnee){
+  if(!atelier) return '<option value="">— Sélectionner un atelier d\'abord —</option>';
+  return '<option value="">— Sélectionner une machine —</option>'
+    +atelier.machines.map(function(m){
+      var s=statutMachine(m.id);
+      var dispo=s.statut==='dispo'?'✅':s.statut==='occupe'?'🟡 En prod':s.statut==='panne'?'🔴 En panne':'🔧';
+      return '<option value="'+m.nom+'" data-id="'+m.id+'"'+(machineSelectionnee===m.nom?' selected':'')+'>'+dispo+' '+m.nom+'</option>';
+    }).join('');
+}
+
+function rechargerMachProd(sel){
+  var atelierNom=sel.value;
+  var atelier=ATELIERS.find(function(a){return a.nom===atelierNom;})||ATELIERS[0];
+  var machSel=document.getElementById('pMachine');
+  if(machSel) machSel.innerHTML=getMachineOptions(atelier,null);
+  var hidId=document.getElementById('pMachineId');
+  if(hidId) hidId.value='';
+  // Recharger machinistes
+  var machNoms=getMachinistesAtelier(atelierNom);
+  var machNomSel=document.getElementById('pMachiniste');
+  if(machNomSel){
+    machNomSel.innerHTML='<option value="">— Non assigné —</option>'
+      +machNoms.map(function(n){
+        var s=statutMachiniste(n);
+        var ico=s==='absent'?'❌ ':s==='conge'?'🏖️ ':'✅ ';
+        return '<option value="'+n+'">'+ico+n+'</option>';
+      }).join('');
+  }
+}
+
+function setMidProd(sel){
+  var opt=sel.options[sel.selectedIndex];
+  var mid=opt?opt.getAttribute('data-id'):'';
+  var hid=document.getElementById('pMachineId');
+  if(hid) hid.value=mid||'';
+
+  // Vérifier disponibilité machine
+  if(mid){
+    var s=statutMachine(mid);
+    if(s.statut==='occupe'){
+      var aff=s.affectation;
+      alert('⚠️ Attention : cette machine est déjà occupée jusqu\'au '+(aff.date_fin||'?')+' pour le dossier '+(aff.dossier_num||''));
+    } else if(s.statut==='panne'){
+      alert('🔴 Cette machine est en panne. Retour prévu : '+(G_ETATS[mid].date_retour||'non défini'));
+    }
+  }
+}
+
+async function sauverProd(){
+  if(!G_PROD_ID) return;
+  var statutEl=document.getElementById('pStatut');
+  if(!statutEl){alert('Erreur formulaire.');return;}
+  var statut=statutEl.value;
+  var atelier=Array.from(document.querySelectorAll('input[name="pAtelier"]:checked')).map(function(cb){return cb.value;}).join(', ');
+  var machinesChecked=Array.from(document.querySelectorAll('input[name="pMachine"]:checked')).map(function(cb){return cb.value;});
+  var machinesIds=Array.from(document.querySelectorAll('input[name="pMachine"]:checked')).map(function(cb){return cb.getAttribute('data-id');});
+  var machine=machinesChecked.join(', ');
+  var machineId=machinesIds.join(', ');
+  var machinistesChecked=Array.from(document.querySelectorAll('input[name="pMachiniste"]:checked')).map(function(cb){return cb.value;});
+  var machiniste=machinistesChecked.join(', ');
+  var debut=document.getElementById('pDebut')?document.getElementById('pDebut').value||null:null;
+  var fin=document.getElementById('pFin')?document.getElementById('pFin').value||null:null;
+  var dateSouhaitee=document.getElementById('pDateSouhaitee')?document.getElementById('pDateSouhaitee').value||null:null;
+  var dateLivraison=document.getElementById('pDateLivraison')?document.getElementById('pDateLivraison').value||null:null;
+  var notes=document.getElementById('pNotes')?document.getElementById('pNotes').value.trim():'';
+  var batStatut=document.getElementById('pBatStatut')?document.getElementById('pBatStatut').value:null;
+  var batDate=document.getElementById('pBatDate')?document.getElementById('pBatDate').value||null:null;
+  var batRef=document.getElementById('pBatRef')?document.getElementById('pBatRef').value||null:null;
+  if(statut==='en_production'&&batStatut&&batStatut!=='valide'){
+    if(!confirm('BAT non validé. Lancer quand même?')) return;
+  }
+  try{
+    var updates={
+      statut_production:statut,
+      atelier_production:atelier||null,
+      ateliers_assignes:atelier||null,
+      machine_assignee:machine||null,
+      machine_id_assignee:machineId||null,
+      machines_assignees:machine||null,
+      machiniste_assigne:machiniste||null,
+      machinistes_assignes:machiniste||null,
+      date_lancement:debut,
+      date_fin_production:fin,
+      date_livraison_souhaitee:dateSouhaitee,
+      date_livraison_prevue:dateLivraison,
+      bat_statut:batStatut||'non_soumis',
+      bat_date_validation:batDate,
+      bat_ref:batRef,
+      notes_production:notes
+    };
+    var res=await SB.from('dossiers').update(updates).eq('id',G_PROD_ID);
+    if(res.error) throw res.error;
+    var idx3=G_DOSSIERS.findIndex(function(d){return d.id===G_PROD_ID;});
+    if(idx3>-1) Object.assign(G_DOSSIERS[idx3],updates);
+    if(statut==='en_production'&&machinesIds.length>0&&debut&&fin){
+      var d=G_DOSSIERS.find(function(x){return x.id===G_PROD_ID;})||{};
+      await SB.from('affectations_production').delete().eq('dossier_id',G_PROD_ID);
+      for(var mi=0;mi<machinesIds.length;mi++){
+        await SB.from('affectations_production').insert({
+          dossier_id:G_PROD_ID,
+          dossier_num:d.num||'',
+          machine_id:machinesIds[mi],
+          machine_nom:machinesChecked[mi],
+          machiniste:machiniste,
+          date_debut:debut,
+          date_fin:fin,
+          statut:'en_cours'
+        });
+      }
+    }
+    fermer('ovProd');
+    await charger();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+async function terminerProduction(dossierId){
+  if(!confirm('Marquer cette production comme terminée ?')) return;
+  try{
+    await SB.from('dossiers').update({statut_production:'prod_termine'}).eq('id',dossierId);
+    // Terminer l\'affectation machine
+    await SB.from('affectations_production').update({statut:'termine'}).eq('dossier_id',dossierId);
+    await charger();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+async function marquerPretLivrer(dossierId){
+  try{
+    await SB.from('dossiers').update({statut_production:'pret_livrer'}).eq('id',dossierId);
+    await charger();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+async function marquerLivre(dossierId){
+  try{
+    await SB.from('dossiers').update({statut_production:'livre'}).eq('id',dossierId);
+    await charger();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+// ── MACHINES ──────────────────────────────────────────
+function renderMachines(){
+  var canEdit=(G_ROLE==='admin'||G_ROLE==='production');
+  document.getElementById('btnAddAtelier')&&(document.getElementById('btnAddAtelier').style.display=canEdit?'inline-block':'none');
+  document.getElementById('btnAddMachine')&&(document.getElementById('btnAddMachine').style.display=canEdit?'inline-block':'none');
+  var el=document.getElementById('tab-machines');
+  if(!el) return;
+  var canEdit=(G_ROLE==='admin'||G_ROLE==='production');
+  var html='';
+
+  getAllAteliers().forEach(function(a){
+    html+='<div class="atelier-section">';
+    var isAtelierDB = G_ATELIERS_DB.find(function(x){return x.id===a.id||x.nom===a.nom;});
+    html+='<div class="atelier-header" style="background:'+a.couleur+'">'
+      +'<span style="font-size:20px">'+a.icone+'</span>'
+      +'<div style="flex:1">'
+      +'<div style="font-size:13px;font-weight:800">'+a.nom+'</div>'
+      +'<div style="font-size:10px;opacity:0.8">'
+      +(a.machinistesNoms||[]).join(' · ')+'</div>'
+      +(canEdit&&isAtelierDB
+        ?'<button class="btn btn-sm" style="margin-left:8px;background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)" '
+          +'onclick="ouvrirFormAtelier(\''+a.id+'\')">'+'✏️ Modifier</button>'
+        :'')
+      +'</div></div>';
+    html+='<div class="machines-grid">';
+    a.machines.forEach(function(m){
+      var s=statutMachine(m.id);
+      var cls=s.statut==='dispo'?'dispo':s.statut==='occupe'?'occupe':'panne';
+      html+='<div class="machine-card '+cls+'">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
+        +'<div style="font-size:12px;font-weight:700;flex:1">'+m.nom+'</div>'
+        +badgeStatutMachine(s)+'</div>';
+      // Productions possibles
+      html+='<div style="margin-bottom:8px">'
+        +m.productions.slice(0,3).map(function(p){
+          return '<span style="display:inline-block;background:'+a.bg+';color:'+a.couleur
+            +';padding:1px 7px;border-radius:999px;font-size:9px;font-weight:700;margin:1px">'+p+'</span>';
+        }).join('')+(m.productions.length>3?'<span style="font-size:9px;color:var(--gris)"> +'+( m.productions.length-3)+'</span>':'')
+        +'</div>';
+      // Info occupation
+      if(s.statut==='occupe'&&s.affectation){
+        var aff=s.affectation;
+        html+='<div style="font-size:10px;color:var(--orange);background:#FEF3E2;padding:6px;border-radius:6px">'
+          +'📋 '+(aff.dossier_num||'')+(aff.machiniste?' · '+aff.machiniste:'')+'<br>'
+          +'⏰ jusqu\'au '+(aff.date_fin||'?')
+          +'</div>';
+      }
+      if(s.statut==='panne'){
+        var e=G_ETATS[m.id]||{};
+        html+='<div style="font-size:10px;color:var(--rouge);background:#FDEDEC;padding:6px;border-radius:6px">'
+          +'🔴 '+(e.note||'En panne')+(e.date_retour?'<br>Retour prévu : '+e.date_retour:'')
+          +'</div>';
+      }
+      // Note machine
+      html+='<div style="font-size:10px;color:var(--gris);margin-top:6px;font-style:italic">'+m.notes+'</div>';
+      if(canEdit){
+        html+='<div style="margin-top:8px">'
+          +'<button class="btn btn-sm" onclick="ouvrirEtatMachine(\''+m.id+'\')">🔧 Modifier état</button>'
+          +'</div>';
+      }
+      html+='</div>';
+    });
+    html+='</div></div>';
+  });
+  var mc=document.getElementById('machines-content');
+  if(mc) mc.innerHTML=html; else el.innerHTML=html;
+}
+
+var G_MACHINE_COURANTE=null;
+function ouvrirEtatMachine(mid){
+  G_MACHINE_COURANTE=mid;
+  var e=G_ETATS[mid]||{};
+  var nomM='';
+  ATELIERS.forEach(function(a){a.machines.forEach(function(m){if(m.id===mid)nomM=m.nom;});});
+  document.getElementById('modMach').innerHTML=
+    '<h3>État de la machine</h3>'
+    +'<div class="modal-sub">'+nomM+'</div>'
+    +'<div class="fr"><label>Statut</label><select id="eStatut">'
+    +'<option value="ok"'+((!e.statut||e.statut==='ok')?' selected':'')+'>✅ Disponible</option>'
+    +'<option value="maintenance"'+(e.statut==='maintenance'?' selected':'')+'>🔧 Maintenance</option>'
+    +'<option value="panne"'+(e.statut==='panne'?' selected':'')+'>🔴 En panne</option>'
+    +'</select></div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Depuis</label><input type="date" id="ePanne" value="'+(e.date_panne||'')+'"></div>'
+    +'<div class="fr"><label>Retour prévu</label><input type="date" id="eRetour" value="'+(e.date_retour||'')+'"></div>'
+    +'</div>'
+    +'<div class="fr"><label>Note</label><textarea id="eNote" rows="2">'+(e.note||'')+'</textarea></div>'
+    +'<div class="fa">'
+    +'<button class="btn" onclick="fermer(\'ovMach\')">Annuler</button>'
+    +'<button class="btn btn-p" onclick="sauverEtatMachine()">Enregistrer</button>'
+    +'</div>';
+  document.getElementById('ovMach').classList.add('open');
+}
+
+async function sauverEtatMachine(){
+  var data={
+    machine_id:G_MACHINE_COURANTE,
+    statut:document.getElementById('eStatut').value,
+    date_panne:document.getElementById('ePanne').value||null,
+    date_retour:document.getElementById('eRetour').value||null,
+    note:document.getElementById('eNote').value.trim(),
+    mis_a_jour_le:new Date().toISOString()
+  };
+  try{
+    var ex=G_ETATS[G_MACHINE_COURANTE];
+    if(ex&&ex.id) await SB.from('etats_machines').update(data).eq('id',ex.id);
+    else await SB.from('etats_machines').insert(data);
+    fermer('ovMach');
+    await charger();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+// ── MACHINISTES ───────────────────────────────────────
+function renderMachinistes(){
+  var el=document.getElementById('machinistes-list');
+  if(!el) return;
+  var q=(document.getElementById('srchMach')||{value:''}).value.toLowerCase();
+  var canEdit=(G_ROLE==='admin'||G_ROLE==='production');
+  var td=today();
+
+  // Construire liste complète : statiques + base de données
+  var tousNoms=[];
+  // Machinistes statiques de base
+  Object.keys(MACHINISTES_PAR_ATELIER).forEach(function(atelier){
+    MACHINISTES_PAR_ATELIER[atelier].forEach(function(nom){
+      tousNoms.push({nom:nom, atelier:atelier, source:'statique', id:null});
+    });
+  });
+  // Machinistes ajoutés en base (priorité sur statiques)
+  G_MACHINISTES.forEach(function(m){
+    var existant = tousNoms.find(function(x){return x.nom===m.nom;});
+    if(existant){
+      existant.id = m.id;
+      existant.atelier = m.atelier||existant.atelier;
+      existant.source = 'db';
+      existant.machines = m.machines;
+      existant.notes = m.notes;
+    } else {
+      tousNoms.push({nom:m.nom, atelier:m.atelier||'—', source:'db', id:m.id, machines:m.machines, notes:m.notes});
+    }
+  });
+
+  // Dédupliquer par nom (garder la version DB si disponible)
+  var nomsDeja = {};
+  tousNoms = tousNoms.filter(function(m){
+    if(nomsDeja[m.nom]) return false;
+    nomsDeja[m.nom] = true;
+    return true;
+  });
+  var filtres = tousNoms.filter(function(m){
+    return !q || m.nom.toLowerCase().includes(q) || (m.atelier||'').toLowerCase().includes(q);
+  });
+
+  var html='';
+  if(canEdit){
+    html+='<div style="margin-bottom:16px">'
+      +'<button class="btn btn-p" onclick="ouvrirFormMachiniste(null)">+ Ajouter machiniste</button>'
+      +'</div>';
+  }
+
+  html+='<div class="table-wrap"><table class="dtable">'
+    +'<thead><tr>'
+    +'<td>Nom</td><td>Atelier</td><td>Machines maîtrisées</td>'
+    +'<td>Statut aujourd\'hui</td><td>Dossier en cours</td>'
+    +(canEdit?'<td>Disponibilité</td><td>Actions</td>':'')
+    +'</tr></thead><tbody>';
+
+  filtres.forEach(function(m){
+    var s=statutMachiniste(m.nom);
+    var badge=s==='absent'?'<span class="statut s-panne"><span class="dot"></span>Absent</span>'
+            :s==='occupe'?'<span class="statut s-prod"><span class="dot"></span>En production</span>'
+            :s==='conge'?'<span class="statut s-occupe"><span class="dot"></span>Congé</span>'
+            :'<span class="statut s-dispo"><span class="dot"></span>Disponible</span>';
+    var aff=G_AFFECTATIONS.find(function(a){
+      return a.machiniste===m.nom && a.statut!=='termine' && a.date_debut<=td && a.date_fin>=td;
+    });
+    var dosClient='—';
+    if(aff){
+      var dosLie=G_DOSSIERS.find(function(d){return d.id===aff.dossier_id;});
+      dosClient=dosLie?(dosLie.client||dosLie.num||'—'):'—';
+      if(aff.date_fin) dosClient+=' (jusqu\'au '+aff.date_fin+')';
+    }
+
+    html+='<tr>'
+      +'<td><strong>'+m.nom+'</strong>'
+      +(m.source==='db'?'':' <span style="font-size:9px;color:var(--gris);background:var(--fond);padding:1px 5px;border-radius:999px">par défaut</span>')
+      +'</td>'
+      +'<td style="font-size:11px">'+( m.atelier||'—')+'</td>'
+      +'<td style="font-size:11px;color:var(--gris)">'+( m.machines||'—')+'</td>'
+      +'<td>'+badge+'</td>'
+      +'<td style="font-size:11px">'+dosClient+'</td>';
+
+    if(canEdit){
+      html+='<td>'
+        +'<select onchange="changerDispo(\''+m.nom+'\',this.value)" '
+        +'style="padding:4px 8px;border-radius:6px;border:1px solid var(--gris-l);font-size:11px">'
+        +'<option value="present"'+(s==='present'?' selected':'')+'>✅ Présent</option>'
+        +'<option value="absent"'+(s==='absent'?' selected':'')+'>❌ Absent</option>'
+        +'<option value="conge"'+(s==='conge'?' selected':'')+'>🏖️ Congé</option>'
+        +'</select></td>'
+        +'<td style="white-space:nowrap">'
+        +'<button class="btn btn-sm" onclick="ouvrirFormMachiniste('+(m.id?'\''+m.id+'\'':'null,\''+m.nom+'\'')+')">✏️ Modifier</button>';
+      if(m.id){
+        html+=' <button class="btn btn-sm btn-r" onclick="supprimerMachiniste(this.getAttribute(\'data-id\'))" data-id="'+m.id+'" >🗑️</button>';
+      } else {
+        html+=' <button class="btn btn-sm btn-r" onclick="supprimerMachinistePD(this.getAttribute(\'data-nom\'),this.getAttribute(\'data-at\'))" data-nom="'+m.nom+'" data-at="'+m.atelier+'" >🗑️</button>';
+      }
+    }
+    html+='</tr>';
+  });
+
+  html+='</tbody></table></div>';
+  el.innerHTML=html;
+}
+
+
+var G_MACHINISTE_EDIT_ID = null;
+var G_MACHINISTE_EDIT_NOM = null;
+
+function ouvrirFormMachiniste(id, nomDefaut){
+  G_MACHINISTE_EDIT_ID = id || null;
+  G_MACHINISTE_EDIT_NOM = nomDefaut || null;
+  var m = id ? (G_MACHINISTES.find(function(x){return x.id===id;}) || {}) :
+    (nomDefaut ? {
+      nom: nomDefaut,
+      atelier: Object.keys(MACHINISTES_PAR_ATELIER).find(function(k){
+        return MACHINISTES_PAR_ATELIER[k].indexOf(nomDefaut) > -1;
+      }) || ''
+    } : {});
+
+  var atOpts = getAllAteliers().map(function(a){
+    return '<option value="'+a.nom+'"'+(m.atelier===a.nom?' selected':'')+'>'+a.icone+' '+a.nom+'</option>';
+  }).join('');
+
+  document.getElementById('modMachiniste').innerHTML =
+    '<h3>'+(id?'Modifier':'Ajouter')+' un machiniste</h3>'
+    +'<div class="modal-sub">Personnel de production</div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Nom & Prénom</label>'
+    +'<input id="machNom" value="'+(m.nom||'')+'" placeholder="Ex: M. Dupont" autocomplete="off"></div>'
+    +'<div class="fr"><label>Atelier principal</label>'
+    +'<select id="machAtelier">'+atOpts+'</select></div>'
+    +'</div>'
+    +'<div class="fr"><label>Machines maîtrisées</label>'
+    +'<input id="machMachines" value="'+(m.machines||'')+'" placeholder="Ex: RISO 9150, Konica C658..." autocomplete="off"></div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Téléphone</label>'
+    +'<input id="machTel" value="'+(m.telephone||'')+'" placeholder="+242..." autocomplete="off"></div>'
+    +'<div class="fr"><label>Notes</label>'
+    +'<input id="machNotes" value="'+(m.notes||'')+'" autocomplete="off"></div>'
+    +'</div>'
+    +'<div class="fa">'
+    +(id?'<button class="btn btn-r" onclick="supprimerMachiniste(\"'+id+'\")">🗑️ Supprimer</button>':'')
+    +'<button class="btn" onclick="fermer(\'ovMachiniste\')">Annuler</button>'
+    +'<button class="btn btn-p" onclick="sauverMachiniste()">Enregistrer</button>'
+    +'</div>';
+  document.getElementById('ovMachiniste').classList.add('open');
+}
+
+async function sauverMachiniste(){
+  var nom=document.getElementById('machNom').value.trim();
+  if(!nom){alert('Le nom est obligatoire.');return;}
+  var data={
+    nom:nom,
+    atelier:document.getElementById('machAtelier').value,
+    machines:document.getElementById('machMachines')?document.getElementById('machMachines').value.trim():'',
+    notes:document.getElementById('machNotes')?document.getElementById('machNotes').value.trim():''
+  };
+  try{
+    // Mettre à jour MACHINISTES_PAR_ATELIER
+    var oldNom=G_MACHINISTE_EDIT_NOM||nom;
+    Object.keys(MACHINISTES_PAR_ATELIER).forEach(function(k){
+      var i=MACHINISTES_PAR_ATELIER[k].indexOf(oldNom);
+      if(i>-1) MACHINISTES_PAR_ATELIER[k].splice(i,1);
+    });
+    if(!MACHINISTES_PAR_ATELIER[data.atelier]) MACHINISTES_PAR_ATELIER[data.atelier]=[];
+    if(MACHINISTES_PAR_ATELIER[data.atelier].indexOf(nom)===-1)
+      MACHINISTES_PAR_ATELIER[data.atelier].push(nom);
+    // Chercher en DB
+    var existDB=G_MACHINISTES.find(function(x){
+      return x.id===G_MACHINISTE_EDIT_ID||x.nom===oldNom;
+    });
+    var editId=G_MACHINISTE_EDIT_ID||(existDB?existDB.id:null);
+    if(editId){
+      await SB.from('machinistes').update(data).eq('id',editId);
+      var idx2=G_MACHINISTES.findIndex(function(x){return x.id===editId;});
+      if(idx2>-1) Object.assign(G_MACHINISTES[idx2],data);
+    } else {
+      var res=await SB.from('machinistes').insert(data).select();
+      if(res.error) throw res.error;
+      if(res.data&&res.data[0]) G_MACHINISTES.push(res.data[0]);
+    }
+    fermer('ovMachiniste');
+    renderMachinistes();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+async function supprimerMachinistePD(nom, atelier){
+  if(!confirm('Supprimer '+nom+' de l\'atelier '+atelier+' ?')) return;
+  // Retirer de MACHINISTES_PAR_ATELIER
+  if(MACHINISTES_PAR_ATELIER[atelier]){
+    MACHINISTES_PAR_ATELIER[atelier] = MACHINISTES_PAR_ATELIER[atelier].filter(function(n){ return n!==nom; });
+  }
+  // Si existe en DB, supprimer aussi
+  var inDB = G_MACHINISTES.find(function(x){ return x.nom===nom; });
+  if(inDB) await SB.from('machinistes').delete().eq('id', inDB.id);
+  renderMachinistes();
+}
+
+async function supprimerMachiniste(id){
+  if(!confirm('Supprimer ce machiniste ?')) return;
+  try{
+    await SB.from('machinistes').delete().eq('id', id);
+    await charger();
+  } catch(e){ alert('Erreur: '+e.message); }
+}
+
+async function changerDispo(nom, statut){
+  var td=today();
+  try{
+    var existing=G_DISPOS.find(function(d){return d.machiniste===nom&&d.date===td;});
+    if(existing){
+      await SB.from('disponibilites_machinistes').update({statut:statut}).eq('id',existing.id);
+    } else {
+      await SB.from('disponibilites_machinistes').insert({machiniste:nom,date:td,statut:statut});
+    }
+    await charger();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+// ── PLANNING ──────────────────────────────────────────
+function renderPlanning(){
+  var el=document.getElementById('planning-wrap');
+  if(!el) return;
+  var semStart=document.getElementById('planSemaine')?document.getElementById('planSemaine').value:today();
+  var fAt=document.getElementById('planAtelier')?document.getElementById('planAtelier').value:'';
+  if(!semStart) semStart=today();
+
+  // Générer 7 jours
+  var jours=[];
+  var joursNoms=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  for(var i=0;i<7;i++){
+    var d=new Date(semStart);
+    d.setDate(d.getDate()+i);
+    jours.push({
+      key:d.toISOString().substring(0,10),
+      label:joursNoms[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1)
+    });
+  }
+
+  var html='<div class="planning-wrap"><table class="planning-tbl"><thead><tr>'
+    +'<th style="text-align:left;min-width:180px">Machine / Machiniste</th>';
+  jours.forEach(function(j){
+    var isToday=j.key===today();
+    html+='<th style="'+(isToday?'background:var(--or);color:var(--noir)':'')+'">'
+      +j.label+(isToday?' ★':'')+'</th>';
+  });
+  html+='</tr></thead><tbody>';
+
+  var ateliersFiltres=fAt?getAllAteliers().filter(function(a){return a.nom===fAt;}):getAllAteliers();
+
+  ateliersFiltres.forEach(function(a){
+    // Ligne titre atelier
+    html+='<tr><td colspan="'+(jours.length+1)+'" style="background:'+a.couleur+';color:#fff;'
+      +'font-size:10px;font-weight:800;letter-spacing:0.8px;padding:6px 12px">'+a.icone+' '+a.nom+'</td></tr>';
+
+    // Ligne par machine
+    a.machines.forEach(function(m){
+      html+='<tr><td class="rl" style="font-size:11px">'+m.nom.substring(0,28)+'</td>';
+      jours.forEach(function(j){
+        var affList=G_AFFECTATIONS.filter(function(af){
+          return af.machine_id===m.id && af.statut!=='termine'
+            && af.date_debut<=j.key && af.date_fin>=j.key;
+        });
+        var etat=G_ETATS[m.id]||{};
+        html+='<td>';
+        if(etat.statut==='panne'){
+          html+='<div class="pcell pcell-urgent">🔴 Panne</div>';
+        } else {
+          affList.forEach(function(af){
+            // Trouver le nom du client
+            var dosClient2=G_DOSSIERS.find(function(dx){return dx.id===af.dossier_id;});
+            var labelCell=dosClient2?(dosClient2.client||af.dossier_num||'—'):(af.dossier_num||'—');
+            html+='<div class="pcell pcell-prod" title="'+labelCell+'">'
+              +labelCell.substring(0,15)+(labelCell.length>15?'…':'')+'</div>';
+          });
+        }
+        html+='</td>';
+      });
+      html+='</tr>';
+    });
+
+    // Ligne par machiniste - déduplication par atelier principal
+    var machs=getMachinistesAtelier(a.nom).filter(function(nom){
+      var atPrincipal=null;
+      Object.keys(MACHINISTES_PAR_ATELIER).forEach(function(k){
+        if(MACHINISTES_PAR_ATELIER[k].indexOf(nom)>-1&&!atPrincipal) atPrincipal=k;
+      });
+      return !atPrincipal||atPrincipal===a.nom;
+    });
+    machs.forEach(function(nom){
+      html+='<tr style="background:var(--fond)"><td class="rl" style="font-size:11px;color:var(--gris)">👷 '+nom+'</td>';
+      jours.forEach(function(j){
+        var s=statutMachiniste(nom,j.key);
+        // Chercher affectation avec liste CSV de machinistes
+        var aff=G_AFFECTATIONS.find(function(af){
+          if(af.statut==='termine'||!af.date_debut||!af.date_fin) return false;
+          if(af.date_debut>j.key||af.date_fin<j.key) return false;
+          var noms=(af.machiniste||'').split(',').map(function(n){return n.trim();});
+          return noms.indexOf(nom)>-1;
+        });
+        // Chercher aussi dans les dossiers
+        if(!aff){
+          var dosAff=G_DOSSIERS.find(function(d){
+            if(d.statut_production!=='en_production') return false;
+            if(!d.date_lancement||!d.date_fin_production) return false;
+            if(d.date_lancement>j.key||d.date_fin_production<j.key) return false;
+            var noms=(d.machiniste_assigne||'').split(',').map(function(n){return n.trim();});
+            return noms.indexOf(nom)>-1;
+          });
+          if(dosAff){
+            var clientLabel=dosAff.client||dosAff.num||'—';
+            aff={dossier_num:dosAff.num, dossier_id:dosAff.id, client_label:clientLabel};
+          }
+        }
+        html+='<td>';
+        if(s==='absent') html+='<div class="pcell pcell-urgent">❌ Absent</div>';
+        else if(s==='conge') html+='<div class="pcell" style="background:#FEF3E2;color:var(--orange)">🏖️ Congé</div>';
+        else if(s==='occupe'||aff){
+          var lblCell = '—';
+          if(aff){
+            var dAff = G_DOSSIERS.find(function(dx){return dx.id===aff.dossier_id;});
+            lblCell = dAff ? (dAff.client||dAff.num||'—') : (aff.dossier_num||'—');
+          } else {
+            // Chercher via dossiers directement
+            var dDir = G_DOSSIERS.find(function(dos){
+              if(dos.statut_production!=='en_production') return false;
+              if(!dos.date_lancement||!dos.date_fin_production) return false;
+              if(dos.date_lancement>j.key||dos.date_fin_production<j.key) return false;
+              var ns=(dos.machiniste_assigne||'').split(',').map(function(n){return n.trim();});
+              return ns.indexOf(nom)>-1;
+            });
+            if(dDir) lblCell = dDir.client||dDir.num||'—';
+          }
+          html+='<div class="pcell pcell-prod" title="'+lblCell+'">'
+            +lblCell.substring(0,14)+(lblCell.length>14?'…':'')+'</div>';
+        }
+        else html+='<div class="pcell pcell-ok" style="opacity:0.4">Libre</div>';
+        html+='</td>';
+      });
+      html+='</tr>';
+    });
+  });
+
+  html+='</tbody></table></div>';
+  el.innerHTML=html;
+}
+
+// ── GESTION ATELIERS & MACHINES DB ──────────────────
+var G_ATELIER_EDIT_ID=null;
+var G_MACHINE_DB_EDIT_ID=null;
+
+function ouvrirFormAtelier(id){
+  G_ATELIER_EDIT_ID=id;
+  var a=id?(G_ATELIERS_DB.find(function(x){return x.id===id;})||{}):{};
+  document.getElementById('modAtelier').innerHTML=
+    '<h3>'+(id?'Modifier':'Nouvel')+'atelier</h3>'
+    +'<div class="modal-sub">Atelier de production</div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Nom de l\'atelier</label>'
+    +'<input id="aNom" value="'+(a.nom||'')+'" placeholder="Ex: Atelier Sérigraphie"></div>'
+    +'<div class="fr"><label>Icône (emoji)</label>'
+    +'<input id="aIcone" value="'+(a.icone||'🏭')+'" placeholder="🏭" style="font-size:20px;width:80px"></div>'
+    +'</div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Couleur principale (hex)</label>'
+    +'<input type="color" id="aCouleur" value="'+(a.couleur||'#185FA5')+'"></div>'
+    +'<div class="fr"><label>Couleur fond (hex)</label>'
+    +'<input type="color" id="aBg" value="'+(a.bg||'#EEF2F8')+'"></div>'
+    +'</div>'
+    +'<div class="fa">'
+    +'<button class="btn" onclick="fermer(\'ovAtelier\')">Annuler</button>'
+    +(id?'<button class="btn btn-r" onclick="supprimerAtelier(\''+id+'\')">Supprimer</button>':'')
+    +'<button class="btn btn-p" onclick="sauverAtelier()">Enregistrer</button>'
+    +'</div>';
+  document.getElementById('ovAtelier').classList.add('open');
+}
+
+async function sauverAtelier(){
+  var nom=document.getElementById('aNom').value.trim();
+  if(!nom){alert('Le nom est obligatoire.');return;}
+  var data={
+    nom:nom,
+    icone:document.getElementById('aIcone').value.trim()||'🏭',
+    couleur:document.getElementById('aCouleur').value,
+    bg:document.getElementById('aBg').value
+  };
+  try{
+    if(G_ATELIER_EDIT_ID){
+      await SB.from('ateliers_db').update(data).eq('id',G_ATELIER_EDIT_ID);
+    } else {
+      await SB.from('ateliers_db').insert(data);
+    }
+    fermer('ovAtelier');
+    await charger();
+    renderMachines();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+async function supprimerAtelier(id){
+  if(!confirm('Supprimer cet atelier et ses machines ?')) return;
+  await SB.from('machines_db').delete().eq('atelier_id',id);
+  await SB.from('ateliers_db').delete().eq('id',id);
+  await charger();
+  renderMachines();
+}
+
+function ouvrirFormMachineDB(id){
+  G_MACHINE_DB_EDIT_ID=id;
+  var m=id?(G_MACHINES_DB.find(function(x){return x.id===id;})||{}):{};
+  var atOpts=getAllAteliers().map(function(a){
+    var val = a.id || a.nom; // UUID pour DB, nom pour statiques
+    var sel = (m.atelier_id && m.atelier_id===a.id) || (m.atelier_nom && m.atelier_nom===a.nom);
+    return '<option value="'+val+'"'+(sel?' selected':'')+'>'+a.icone+' '+a.nom+'</option>';
+  }).join('');
+  document.getElementById('modMachineDB').innerHTML=
+    '<h3>'+(id?'Modifier':'Nouvelle')+' machine</h3>'
+    +'<div class="modal-sub">Machine de production</div>'
+    +'<div class="fr"><label>Atelier</label>'
+    +'<select id="mdbAtelier">'+atOpts+'</select></div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Nom de la machine</label>'
+    +'<input id="mdbNom" value="'+(m.nom||'')+'" placeholder="Ex: HEIDELBERG N°1"></div>'
+    +'<div class="fr"><label>Format max</label>'
+    +'<input id="mdbFormat" value="'+(m.format||'')+'" placeholder="Ex: A2, Grand format..."></div>'
+    +'</div>'
+    +'<div class="fr2">'
+    +'<div class="fr"><label>Volume recommandé</label>'
+    +'<input id="mdbVolume" value="'+(m.volume||'')+'" placeholder="Ex: Grande série (1000+)"></div>'
+    +'<div class="fr"><label>Productions possibles</label>'
+    +'<input id="mdbProductions" value="'+(m.productions||'')+'" placeholder="Ex: Affiches, Bâches... (séparés par virgule)"></div>'
+    +'</div>'
+    +'<div class="fr"><label>Notes / Description</label>'
+    +'<textarea id="mdbNotes" rows="2">'+(m.notes||'')+'</textarea></div>'
+    +'<div class="fa">'
+    +'<button class="btn" onclick="fermer(\'ovMachineDB\')">Annuler</button>'
+    +(id?'<button class="btn btn-r" onclick="supprimerMachineDB(\''+id+'\')">Supprimer</button>':'')
+    +'<button class="btn btn-p" onclick="sauverMachineDB()">Enregistrer</button>'
+    +'</div>';
+  document.getElementById('ovMachineDB').classList.add('open');
+}
+
+async function sauverMachineDB(){
+  var nom=document.getElementById('mdbNom').value.trim();
+  if(!nom){alert('Le nom est obligatoire.');return;}
+  // Résoudre l'atelier_id: si ce n'est pas un UUID, chercher/créer dans ateliers_db
+  var rawVal = document.getElementById('mdbAtelier').value||'';
+  var atelierNom = document.getElementById('mdbAtelier').options[document.getElementById('mdbAtelier').selectedIndex]?.text||rawVal;
+  var isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawVal);
+  var atelierUUID = isUUID ? rawVal : null;
+  if(!isUUID){
+    // Chercher si l'atelier existe déjà dans ateliers_db
+    var existAt = G_ATELIERS_DB.find(function(a){return a.nom===atelierNom;});
+    if(existAt){
+      atelierUUID = existAt.id;
+    } else {
+      // Vérifier si c'est un atelier statique existant
+      var atStatique = ATELIERS.find(function(a){
+        return a.nom===atelierNom || (a.nom||'').toLowerCase().replace(/\s+/g,'')===(atelierNom||'').toLowerCase().replace(/\s+/g,'');
+      });
+      if(atStatique){
+        // Atelier statique — créer dans DB pour avoir un UUID mais lier par nom
+        var newAt = await SB.from('ateliers_db').insert({
+          nom: atStatique.nom, // Utiliser le nom exact de l'atelier statique
+          icone: atStatique.icone||'🏭',
+          couleur: atStatique.couleur||'#185FA5',
+          bg: atStatique.bg||'#EEF2F8'
+        }).select();
+        if(newAt.error){ alert('Erreur: '+newAt.error.message); return; }
+        atelierUUID = newAt.data[0].id;
+        G_ATELIERS_DB.push(newAt.data[0]);
+        // Mettre à jour l'id de l'atelier statique pour le matching futur
+        atStatique.db_id = atelierUUID;
+      } else {
+        // Nouvel atelier custom
+        var atEl = ATELIERS.find(function(a){return a.nom===atelierNom;});
+        var newAt2 = await SB.from('ateliers_db').insert({
+          nom: atelierNom,
+          icone: atEl?atEl.icone:'🏭',
+          couleur: atEl?atEl.couleur:'#185FA5',
+          bg: atEl?atEl.bg:'#EEF2F8'
+        }).select();
+        if(newAt2.error){ alert('Erreur: '+newAt2.error.message); return; }
+        atelierUUID = newAt2.data[0].id;
+        G_ATELIERS_DB.push(newAt2.data[0]);
+      }
+    }
+  }
+  var data={
+    atelier_id: atelierUUID,
+    atelier_nom: atelierNom,
+    nom:nom,
+    format:document.getElementById('mdbFormat').value.trim(),
+    volume:document.getElementById('mdbVolume').value.trim(),
+    productions:document.getElementById('mdbProductions').value.trim(),
+    notes:document.getElementById('mdbNotes').value.trim()
+  };
+  try{
+    if(G_MACHINE_DB_EDIT_ID){
+      await SB.from('machines_db').update(data).eq('id',G_MACHINE_DB_EDIT_ID);
+    } else {
+      await SB.from('machines_db').insert(data);
+    }
+    fermer('ovMachineDB');
+    await charger();
+    renderMachines();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+async function supprimerMachineDB(id){
+  if(!confirm('Supprimer cette machine ?')) return;
+  await SB.from('machines_db').delete().eq('id',id);
+  await charger();
+  renderMachines();
+}
+
+// ── LIVRAISONS ───────────────────────────────────────
+function renderLivraisons(){
+  var el = document.getElementById('tab-livraisons');
+  if(!el) return;
+
+  var livres = G_DOSSIERS.filter(function(d){
+    return d.statut_production==='livre' || d.statut_production==='pret_livrer' || d.etape>=4;
+  }).sort(function(a,b){
+    var da = a.date_livraison_prevue||a.date_fin_production||a.cree_le||'';
+    var db = b.date_livraison_prevue||b.date_fin_production||b.cree_le||'';
+    return db.localeCompare(da);
+  });
+
+  var html = '<div style="max-width:1200px;margin:0 auto;padding:12px">';
+
+  // KPI
+  var nLivres = G_DOSSIERS.filter(function(d){return d.statut_production==='livre';}).length;
+  var nPret = G_DOSSIERS.filter(function(d){return d.statut_production==='pret_livrer';}).length;
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">'
+    +'<div class="kpi" style="border-top-color:var(--bleu)"><div class="kpi-l">Total livraisons</div>'
+    +'<div class="kpi-v blu">'+livres.length+'</div></div>'
+    +'<div class="kpi" style="border-top-color:var(--vert)"><div class="kpi-l">Livrés</div>'
+    +'<div class="kpi-v grn">'+nLivres+'</div></div>'
+    +'<div class="kpi" style="border-top-color:var(--orange)"><div class="kpi-l">Prêts à livrer</div>'
+    +'<div class="kpi-v ora">'+nPret+'</div></div>'
+    +'</div>';
+
+  if(!livres.length){
+    html += '<div class="empty">Aucune livraison enregistrée.</div>';
+  } else {
+    html += '<div class="table-wrap"><table class="dtable">'
+      +'<thead><tr>'
+      +'<td>N° Dossier</td><td>Client</td><td>Secteur</td>'
+      +'<td>Prestation</td><td>Atelier</td>'
+      +'<td>Date livraison</td><td>Montant</td><td>Statut</td>'
+      +'</tr></thead><tbody>';
+
+    livres.forEach(function(d){
+      var sp = d.statut_production||'non_lance';
+      var dateL = d.date_livraison_prevue||d.date_fin_production||'—';
+      var statut = sp==='livre'
+        ? '<span class="statut s-livre"><span class="dot"></span>Livré ✓</span>'
+        : sp==='pret_livrer'
+        ? '<span class="statut s-livrer"><span class="dot"></span>Prêt à livrer</span>'
+        : d.etape>=4
+        ? '<span class="statut s-livre"><span class="dot"></span>Livré (recouvrement)</span>'
+        : '<span class="statut"><span class="dot"></span>—</span>';
+
+      html += '<tr>'
+        +'<td><strong>'+( d.num||'—')+'</strong></td>'
+        +'<td style="font-weight:600">'+d.client+'</td>'
+        +'<td style="font-size:11px;color:var(--gris)">'+( d.secteur||'—')+'</td>'
+        +'<td style="font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis">'+( d.objet||'—')+'</td>'
+        +'<td style="font-size:11px">'+( d.atelier_production||'—')+'</td>'
+        +'<td style="font-weight:700;color:var(--bleu)">'+dateL+'</td>'
+        +'<td style="font-weight:800;color:var(--bleu)">'+fmt(d.montant)+'</td>'
+        +'<td>'+statut+'</td>'
+        +'</tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ── INIT ──────────────────────────────────────────────
+renderDashboard();
+setInterval(charger, 60000); // Rafraîchir toutes les minutes
+</script>
+</body>
+</html>
